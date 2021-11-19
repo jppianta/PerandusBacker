@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PerandusBacker (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PerandusBacker (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
