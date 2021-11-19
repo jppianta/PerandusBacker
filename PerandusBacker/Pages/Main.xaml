@@ -17,9 +17,14 @@
     SelectionChanged="OnSelectionChanged">
     <NavigationView.MenuItems>
       <NavigationViewItem
-        Icon="XboxOneConsole"
         Content="Stash"
-        Tag="StashDashboard.StashExplorer"/>
+        Tag="StashDashboard.StashExplorer">
+        <NavigationViewItem.Icon>
+          <FontIcon
+            FontFamily="Segoe Fluent Icons"
+            Glyph="&#xe825;" />
+        </NavigationViewItem.Icon>
+      </NavigationViewItem>
     </NavigationView.MenuItems>
     <Frame
       x:Name="contentFrame" />
