@@ -22,11 +22,12 @@
       CanReorderTabs="True" />
     <toolkit:Loading
       x:Name="LoadingControl"
+      Foreground="{ThemeResource SystemAccentColor}"
       Grid.Row="1">
       <toolkit:Loading.Background>
         <brushes:AcrylicBrush
-          TintColor="Black"
-          TintOpacity="0.32"
+          TintColor="{ThemeResource SystemAccentColor}"
+          TintOpacity="0.1"
           BlurAmount="16.23" />
       </toolkit:Loading.Background>
       <ProgressRing
