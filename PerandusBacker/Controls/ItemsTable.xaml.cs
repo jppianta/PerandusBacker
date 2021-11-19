@@ -21,36 +21,33 @@ namespace PerandusBacker.Controls
   /// </summary>
   public partial class ItemsTable : UserControl
   {
-    private StashManager stashManager = new StashManager();
+    public int StashTabIndex
+    {
+      get { return (int)GetValue(StashTabIndexProperty); }
+      set { 
+        SetValue(StashTabIndexProperty, value);
+        LoadData();
+      }
+    }
+
+    public static readonly DependencyProperty StashTabIndexProperty =
+      DependencyProperty.Register("TabIndex", typeof(int),
+        typeof(ItemsTable), new PropertyMetadata(0));
+
     private StashItem currentSelectedItem = null;
-    private ICollectionViewGroup[] groups;
-    private bool loaded = false;
+
+    private Tab StashTab { get => StashManager.Tabs[StashTabIndex]; }
+
     public ItemsTable()
     {
       this.InitializeComponent();
     }
 
-    private async void LoadData()
+    private void LoadData()
     {
-      LoadingControl.IsLoading = true;
-      await stashManager.LoadStashes();
-
-      StashGrid.ItemsSource = stashManager.GetGroups().View;
-      LoadingControl.IsLoading = false;
-
-      groups = new ICollectionViewGroup[stashManager.NumberOfStashes];
-
-      if (currentSelectedItem == null)
-      {
-        currentSelectedItem = stashManager.Items[0];
-      }
+      StashGrid.ItemsSource = StashTab.GetItems().View;
 
       StashGrid.SelectedItem = currentSelectedItem;
-    }
-
-    void OnLoading(FrameworkElement el, object e)
-    {
-      LoadData();
     }
 
     void OnLoaded(object sender, RoutedEventArgs e)
@@ -60,24 +57,6 @@ namespace PerandusBacker.Controls
       StashItem stashItem = StashGrid.SelectedItem as StashItem;
 
       DrawSocketLinks(socketPanel, linkPanel, stashItem);
-    }
-
-    private void OnLoadingRowGroup(object sender, DataGridRowGroupHeaderEventArgs e)
-    {
-      ICollectionViewGroup group = e.RowGroupHeader.CollectionViewGroup;
-      StashItem item = group.GroupItems[0] as StashItem;
-      e.RowGroupHeader.PropertyValue = item.TabInfo.Name;
-
-      StashGrid.RowGroupHeaderStyles.Add(new Style(typeof(DataGridRowGroupHeader))
-      {
-        Setters = {
-          new Setter() { Property=DataGridRowGroupHeader.FontSizeProperty, Value=45 }
-        }
-      });
-
-      e.RowGroupHeader.Foreground = item.TabInfo.Colour.ToBrush();
-
-      groups[item.TabInfo.Index] = group;
     }
 
     private void DrawSocketLinks(GridView socketPanel, Canvas linkPanel, StashItem stashItem)
@@ -188,33 +167,21 @@ namespace PerandusBacker.Controls
     {
       if (e.Column.SortDirection == null)
       {
-        StashGrid.ItemsSource = stashManager.GetGroupsSorted(e.Column.Tag.ToString(), true).View;
+        StashGrid.ItemsSource = StashTab.GetItemsSorted(e.Column.Tag.ToString(), true).View;
         e.Column.SortDirection = DataGridSortDirection.Ascending;
       }
       else if (e.Column.SortDirection == DataGridSortDirection.Ascending)
       {
-        StashGrid.ItemsSource = stashManager.GetGroupsSorted(e.Column.Tag.ToString(), false).View;
+        StashGrid.ItemsSource = StashTab.GetItemsSorted(e.Column.Tag.ToString(), false).View;
         e.Column.SortDirection = DataGridSortDirection.Descending;
       }
       else
       {
-        StashGrid.ItemsSource = stashManager.GetGroups().View;
+        StashGrid.ItemsSource = StashTab.GetItems().View;
         e.Column.SortDirection = null;
       }
 
       StashGrid.SelectedItem = currentSelectedItem;
-    }
-
-    private void StashGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      if (!loaded)
-      {
-        foreach (ICollectionViewGroup group in groups)
-        {
-          StashGrid.CollapseRowGroup(group, false);
-        }
-        loaded = true;
-      }
     }
   }
 }

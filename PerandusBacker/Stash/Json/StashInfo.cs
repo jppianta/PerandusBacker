@@ -2,13 +2,13 @@
 
 namespace PerandusBacker.Stash.Json
 {
-  internal class StashInfo
+  public class StashInfo
   {
     [JsonPropertyName("numTabs")]
     public int NumberOfTabs { get; set; }
 
     [JsonPropertyName("tabs")]
-    public StashTab[] Tabs { get; set; }
+    public TabInfo[] Tabs { get; set; }
 
     [JsonPropertyName("items")]
     public StashItem[] Items { get; set; }

@@ -14,7 +14,7 @@ namespace PerandusBacker.Stash.Json
       return new SolidColorBrush() { Color = ColorHelper.FromArgb(255, r, g, b) };
     }
   }
-  internal class StashTab
+  public class TabInfo
   {
     [JsonPropertyName("n")]
     public string Name { get; set; }

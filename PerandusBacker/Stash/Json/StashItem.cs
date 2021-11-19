@@ -57,9 +57,9 @@ namespace PerandusBacker.Stash.Json
     public string Name { get; set; }
   }
 
-  internal class StashItem
+  public class StashItem
   {
-    public StashTab TabInfo { get; set; }
+    public TabInfo TabInfo { get; set; }
 
     [JsonPropertyName("w")]
     public int Width { get; set; }

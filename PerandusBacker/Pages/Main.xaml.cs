@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using System;
+using Microsoft.UI.Xaml.Controls;
 
 using PerandusBacker.Utils;
 
@@ -16,6 +17,22 @@ namespace PerandusBacker.Pages
     {
       this.InitializeComponent();
       Events.ResizeWindow(800, 600);
+    }
+
+    private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+    {
+      if (!args.IsSettingsSelected)
+      {
+        var selectedItem = (NavigationViewItem)args.SelectedItem;
+        if (selectedItem != null) {
+          string selectedItemTag = ((string)selectedItem.Tag);
+          string pageName = "PerandusBacker.Pages.Navigation." + selectedItemTag;
+          Type pageType = Type.GetType(pageName);
+          contentFrame.Navigate(pageType);
+        }
+      } else {
+        contentFrame.Navigate(typeof(Page));
+      }
     }
   }
 }
