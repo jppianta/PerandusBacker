@@ -6,10 +6,13 @@ using System;
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml.Data;
 using CommunityToolkit.WinUI.UI;
+using Microsoft.UI;
+using System.Collections.ObjectModel;
+using Windows.UI.Xaml.Data;
+
 using PerandusBacker.Utils;
 using PerandusBacker.Stash;
 using PerandusBacker.Stash.Json;
-using Microsoft.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,10 +24,12 @@ namespace PerandusBacker.Controls
   /// </summary>
   public partial class ItemsTable : UserControl
   {
+    private ObservableCollection<StashItem> Items = new ObservableCollection<StashItem>();
     public int StashTabIndex
     {
       get { return (int)GetValue(StashTabIndexProperty); }
-      set { 
+      set
+      {
         SetValue(StashTabIndexProperty, value);
         LoadData();
       }
@@ -160,6 +165,8 @@ namespace PerandusBacker.Controls
         StashItem stashItem = e.Row.DataContext as StashItem;
 
         DrawSocketLinks(socketPanel, linkPanel, stashItem);
+
+        Events.ItemSelected(currentSelectedItem);
       }
     }
 

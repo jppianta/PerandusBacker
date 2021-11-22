@@ -1,4 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
+
+using PerandusBacker.Utils;
 
 namespace PerandusBacker.Stash.Json
 {
@@ -57,9 +62,43 @@ namespace PerandusBacker.Stash.Json
     public string Name { get; set; }
   }
 
-  public class StashItem
+  public class StashItem : INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      if (propertyName == "PriceCount" || propertyName == "PriceCurrency")
+      {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FullPrice"));
+      }
+    }
+
     public TabInfo TabInfo { get; set; }
+
+    private int _priceCount = 0;
+    public int PriceCount
+    {
+      get => _priceCount;
+      set
+      {
+        _priceCount = value;
+        NotifyPropertyChanged();
+      }
+    }
+
+    private string _priceCurrency = null;
+    public string PriceCurrency
+    {
+      get => _priceCurrency;
+      set
+      {
+        _priceCurrency = value;
+        NotifyPropertyChanged();
+      }
+    }
+
+    public string FullPrice { get => PriceCount > 0 && PriceCurrency != null ? $"{PriceCount} {Data.CurrencyMap(PriceCurrency)}" : ""; }
 
     [JsonPropertyName("w")]
     public int Width { get; set; }

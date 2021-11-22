@@ -9,8 +9,45 @@
   mc:Ignorable="d"
   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-  <Grid Padding="12">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition
+        Height="*" />
+      <RowDefinition
+        Height="Auto" />
+    </Grid.RowDefinitions>
     <controls:ItemsTable
+      Grid.Row="0"
       StashTabIndex="{x:Bind StashTabIndex, Mode=OneWay}" />
+    <Grid
+      Grid.Row="1"
+      Padding="8"
+      ColumnSpacing="8">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition
+          Width="Auto" />
+        <ColumnDefinition
+          Width="Auto" />
+        <ColumnDefinition
+          Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <TextBlock
+        VerticalAlignment="Center"
+        Text="Price" />
+      <ComboBox
+        Grid.Column="1"
+        VerticalAlignment="Center"
+        x:Name="CurrencyComboBox"
+        ItemsSource="{x:Bind Currencies}"
+        MinWidth="150"
+        SelectionChanged="OnCurrencySelected" />
+      <NumberBox
+        Grid.Column="2"
+        VerticalAlignment="Center"
+        x:Name="CurrencyCountBox"
+        Value="0"
+        SpinButtonPlacementMode="Inline"
+        ValueChanged="CurrencyCountChanged" />
+    </Grid>
   </Grid>
 </Page>

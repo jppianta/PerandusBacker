@@ -26,7 +26,6 @@ namespace PerandusBacker
       this.InitializeComponent();
       appWindow = GetAppWindowForCurrentWindow();
       appWindow.SetIcon("Assets/Logos/PerandusBacker.ico");
-
       this.Title = "Perandus Backer";
 
       this.InitializePages();

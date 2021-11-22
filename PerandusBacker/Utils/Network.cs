@@ -2,6 +2,11 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text;
+using HtmlAgilityPack;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PerandusBacker.Utils
 {
@@ -58,6 +63,23 @@ namespace PerandusBacker.Utils
       return await response.Content.ReadAsStringAsync();
     }
 
+    public static async Task<string> RequestPost(string url, ForumInfo data)
+    {
+      return await RequestPost(PoeUri, url, data);
+    }
+
+    private static async Task<string> RequestPost(Uri uri, string url, ForumInfo data)
+    {
+      EnsureClient();
+
+      var content = new FormUrlEncodedContent(data.ToArray());
+
+      HttpResponseMessage response = await _httpClient.PostAsync(uri + url, content);
+      response.EnsureSuccessStatusCode();
+
+      return await response.Content.ReadAsStringAsync();
+    }
+
     public static async Task<string> Request(string url)
     {
       return await Request(PoeUri, url);
@@ -79,17 +101,21 @@ namespace PerandusBacker.Utils
       try
       {
         string output = await Request("my-account");
-        string accountLocation = "/account/view-profile/";
-        int startingAccountPosition = output.IndexOf(accountLocation) + accountLocation.Length;
-        int endingAccountPosition = output.IndexOf('\"', startingAccountPosition);
 
-        Data.Account.Name = output.Substring(startingAccountPosition, endingAccountPosition - startingAccountPosition);
+        HtmlDocument htmlDoc = new HtmlDocument();
+        htmlDoc.LoadHtml(output);
 
-        string accountImageLocation = "alt=\"Avatar\"";
-        int endingAccountImagePosition = output.IndexOf(accountImageLocation) - 2;
-        int startingAccountImagePosition = output.LastIndexOf('\"', endingAccountImagePosition - 1) + 1;
+        // The first a element contains the accountName
+        string accountName = htmlDoc.DocumentNode.SelectSingleNode("//a").InnerText;
 
-        Data.Account.Image = output.Substring(startingAccountImagePosition, endingAccountImagePosition - startingAccountImagePosition);
+        Data.Account.Name = accountName;
+
+        string imageSrc = htmlDoc.DocumentNode.SelectNodes("//img")
+          .Where(node => node.GetAttributeValue("alt", "") == "Avatar")
+          .First()
+          .GetAttributeValue("src", "");
+
+        Data.Account.Image = imageSrc;
 
         return true;
       }
@@ -98,6 +124,42 @@ namespace PerandusBacker.Utils
         UpdatePoeSessionId("");
         return false;
       }
+    }
+
+    public static async Task<string> PostItems(string content, string threadId)
+    {
+      ForumInfo info = await GetForumInfo(threadId);
+      info.Content = content;
+
+      return await RequestPost($"forum/edit-thread/{threadId}", info);
+    }
+
+    private static async Task<ForumInfo> GetForumInfo(string threadId)
+    {
+      ForumInfo info = new ForumInfo();
+      info.Submit = "Submit";
+
+      string output = await Request($"forum/edit-thread/{threadId}");
+
+      HtmlDocument htmlDoc = new HtmlDocument();
+      htmlDoc.LoadHtml(output);
+
+      HtmlNodeCollection inputNodes = htmlDoc.DocumentNode.SelectNodes("//input");
+
+      string hash = inputNodes
+        .Where(node => node.GetAttributeValue("name", "") == "hash")
+        .First()
+        .GetAttributeValue("value", "");
+
+      //string title = inputNodes
+      //  .Where(node => node.GetAttributeValue("name", "") == "title")
+      //  .First()
+      //  .GetAttributeValue("value", "");
+
+      info.Hash = hash;
+      info.Title = "TestShop";
+
+      return info;
     }
   }
 }

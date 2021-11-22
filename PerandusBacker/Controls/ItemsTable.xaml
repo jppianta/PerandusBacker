@@ -227,6 +227,9 @@
           </DataTemplate>
         </toolkit:DataGridTemplateColumn.CellTemplate>
       </toolkit:DataGridTemplateColumn>
+      <toolkit:DataGridTextColumn
+        Header="Price"
+        Binding="{Binding FullPrice}" />
     </toolkit:DataGrid.Columns>
   </toolkit:DataGrid>
 </UserControl>

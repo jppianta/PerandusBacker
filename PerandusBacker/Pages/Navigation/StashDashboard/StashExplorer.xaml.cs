@@ -1,17 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using System.Collections.ObjectModel;
 
 using PerandusBacker.Stash;
@@ -69,10 +57,13 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
 
     private TabViewItem CreateTab(Tab tab)
     {
+      
+
       TabViewItem newTab = new TabViewItem
       {
         Header = tab.Info.Name,
-        IsClosable = false
+        IsClosable = false,
+        HeaderTemplate = HeaderTemplate
       };
 
       newTab.Content = new TabView(tab.Info.Index);

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.UI.Xaml.Data;
+using System.Collections.ObjectModel;
 
 using PerandusBacker.Utils;
 using PerandusBacker.Stash.Json;
@@ -13,7 +14,7 @@ namespace PerandusBacker.Stash
 {
   public class Tab
   {
-    public StashItem[] Items { get; set; }
+    public ObservableCollection<StashItem> Items = new ObservableCollection<StashItem>();
     public TabInfo Info;
     public Tab(TabInfo info)
     {
@@ -36,9 +37,8 @@ namespace PerandusBacker.Stash
             (item.Sockets[2].Colour, item.Sockets[3].Colour) = (item.Sockets[3].Colour, item.Sockets[2].Colour);
           }
         }
+        Items.Add(item);
       }
-
-      this.Items = items;
     }
 
     private IOrderedEnumerable<StashItem> SortColumnQuery(string columnName, bool ascending)
@@ -63,7 +63,7 @@ namespace PerandusBacker.Stash
 
     public CollectionViewSource GetItemsSorted(string columnName, bool ascending)
     {
-      var query = SortColumnQuery(columnName, ascending);
+      IOrderedEnumerable<StashItem> query = SortColumnQuery(columnName, ascending);
 
       CollectionViewSource itemsCollection = new CollectionViewSource();
       itemsCollection.Source = query;
@@ -71,8 +71,14 @@ namespace PerandusBacker.Stash
       return itemsCollection;
     }
 
-    public CollectionViewSource GetItems() {
-      return GetItemsSorted("FullName", true); 
+    public IOrderedEnumerable<StashItem> GetItemsQuery()
+    {
+      return SortColumnQuery("FullName", true);
+    }
+
+    public CollectionViewSource GetItems()
+    {
+      return GetItemsSorted("FullName", true);
     }
   }
 }

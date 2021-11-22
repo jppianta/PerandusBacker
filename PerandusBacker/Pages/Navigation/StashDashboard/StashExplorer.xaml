@@ -10,6 +10,14 @@
   mc:Ignorable="d"
   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+  <Page.Resources>
+    <DataTemplate x:Name="HeaderTemplate">
+      <Grid Padding="4,0,8,0">
+        <TextBlock Text="{Binding}" />
+      </Grid>
+    </DataTemplate>
+  </Page.Resources>
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition
@@ -19,7 +27,9 @@
       TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
       x:Name="TabControl"
       IsAddTabButtonVisible="False"
+      TabWidthMode="SizeToContent"
       CanReorderTabs="True" />
+
     <toolkit:Loading
       x:Name="LoadingControl"
       Foreground="{ThemeResource SystemAccentColor}"

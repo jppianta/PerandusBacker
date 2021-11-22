@@ -1,5 +1,7 @@
 ﻿using System;
 
+using PerandusBacker.Stash.Json;
+
 namespace PerandusBacker.Utils
 {
   public class ResizeEventArgs : EventArgs
@@ -12,6 +14,17 @@ namespace PerandusBacker.Utils
   {
     public string PageName { get; set; }
   }
+
+  public class ItemSelectedEventArgs : EventArgs
+  {
+    public StashItem Item { get; set; }
+  }
+
+  public class UpdateTabEventArgs : EventArgs
+  {
+    public int TabIndex { get; set; }
+  }
+
   static class Events
   {
     public static event EventHandler<SwitchPageEventArgs> SwitchPageHandler;
@@ -24,6 +37,18 @@ namespace PerandusBacker.Utils
     public static void ResizeWindow(int width, int height)
     {
       ResizeWindowHandler?.Invoke(null, new ResizeEventArgs() { Heigth = height, Width = width });
+    }
+
+    public static event EventHandler<ItemSelectedEventArgs> ItemSelectedHandler;
+    public static void ItemSelected(StashItem item)
+    {
+      ItemSelectedHandler?.Invoke(null, new ItemSelectedEventArgs() { Item = item });
+    }
+
+    public static event EventHandler<UpdateTabEventArgs> UpdateTabHandler;
+    public static void UpdateTab(int idx)
+    {
+      UpdateTabHandler?.Invoke(null, new UpdateTabEventArgs() { TabIndex = idx });
     }
   }
 }
