@@ -1,58 +1,69 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Xaml.Data;
-using CommunityToolkit.WinUI.UI;
-using Microsoft.UI;
-using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Data;
 
-using PerandusBacker.Utils;
 using PerandusBacker.Stash;
 using PerandusBacker.Stash.Json;
+using PerandusBacker.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace PerandusBacker.Controls
 {
-  /// <summary>
-  /// An empty window that can be used on its own or navigated to within a Frame.
-  /// </summary>
-  public partial class ItemsTable : UserControl
+  public sealed class ItemsTable : Control
   {
-    private ObservableCollection<StashItem> Items = new ObservableCollection<StashItem>();
-    public int StashTabIndex
+    public Tab StashTab
     {
-      get { return (int)GetValue(StashTabIndexProperty); }
-      set
-      {
-        SetValue(StashTabIndexProperty, value);
-        LoadData();
-      }
+      get => (Tab)GetValue(StashTabProperty);
+      set => SetValue(StashTabProperty, value);
     }
 
-    public static readonly DependencyProperty StashTabIndexProperty =
-      DependencyProperty.Register(nameof(StashTabIndex), typeof(int),
-        typeof(ItemsTable), new PropertyMetadata(0));
+    public static readonly DependencyProperty StashTabProperty =
+      DependencyProperty.Register(nameof(StashTab), typeof(Tab),
+        typeof(ItemsTable), new PropertyMetadata(null, new PropertyChangedCallback(OnItemChanged)));
 
-    private StashItem currentSelectedItem = null;
-
-    private Tab StashTab { get => StashManager.Tabs[StashTabIndex]; }
+    private DataGrid StashGrid;
+    private StashItem currentSelectedItem;
 
     public ItemsTable()
     {
-      this.InitializeComponent();
+      this.DefaultStyleKey = typeof(ItemsTable);
+    }
+
+    private static void OnItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+      ItemsTable table = (ItemsTable)d;
+
+      table.LoadData();
+    }
+
+    protected override void OnApplyTemplate()
+    {
+      StashGrid = GetTemplateChild("StashGrid") as DataGrid;
+
+      StashGrid.SelectionChanged += OnSelectionChanged;
+      StashGrid.Sorting += SortColumn;
+
+      LoadData();
     }
 
     private void LoadData()
     {
-      StashGrid.ItemsSource = StashTab.GetItems().View;
+      if (StashGrid != null)
+      {
+        StashGrid.ItemsSource = StashTab.GetItems().View;
 
-      StashGrid.SelectedItem = currentSelectedItem;
+        StashGrid.SelectedItem = currentSelectedItem;
+      }
     }
 
     private void SortColumn(object sender, DataGridColumnEventArgs e)

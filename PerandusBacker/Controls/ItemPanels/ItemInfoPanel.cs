@@ -1,24 +1,19 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI;
+using Microsoft.UI.Text;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 
-using PerandusBacker.Stash.Json;
 using PerandusBacker.Stash;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+using PerandusBacker.Stash.Json;
 
 namespace PerandusBacker.Controls
 {
-  public sealed class IntemInfoPanel : Control
+  /// <summary>
+  /// Control that organizes the item information - like properties, requirements and modifiers - inside the ItemVisualizer
+  /// </summary>
+  public sealed class ItemInfoPanel : Control
   {
     public StashItem Item
     {
@@ -28,12 +23,12 @@ namespace PerandusBacker.Controls
 
     public static readonly DependencyProperty ItemProperty =
       DependencyProperty.Register(nameof(Item), typeof(StashItem),
-        typeof(IntemInfoPanel), new PropertyMetadata(null, new PropertyChangedCallback(OnItemChanged)));
+        typeof(ItemInfoPanel), new PropertyMetadata(null, new PropertyChangedCallback(OnItemChanged)));
 
     private StackPanel InfoStackPanel;
-    public IntemInfoPanel()
+    public ItemInfoPanel()
     {
-      this.DefaultStyleKey = typeof(IntemInfoPanel);
+      this.DefaultStyleKey = typeof(ItemInfoPanel);
     }
 
     protected override void OnApplyTemplate()
@@ -45,7 +40,7 @@ namespace PerandusBacker.Controls
 
     private static void OnItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      IntemInfoPanel panel = (IntemInfoPanel)d;
+      ItemInfoPanel panel = (ItemInfoPanel)d;
 
       panel.CreatePanel();
     }
@@ -56,11 +51,28 @@ namespace PerandusBacker.Controls
       {
         InfoStackPanel.Children.Clear();
 
-        (List<(ItemProperty[], Orientation)> propertiesList, List<string[]>  modsList) = GetPropertiesAndModifiers();
+        (List<(ItemProperty[], Orientation)> propertiesList, List<string[]> modsList) = GetPropertiesAndModifiers();
 
         InfoStackPanel.Children.Add(CreatePropertiesPanel(propertiesList, HasMods(modsList)));
         InfoStackPanel.Children.Add(CreateModsPanel(modsList));
+        if (IsCorrupted)
+        {
+          InfoStackPanel.Children.Add(CreateCorruptedItem());
+        }
       }
+    }
+
+    private bool IsCorrupted { get => Item != null && Item.Corrupted; }
+
+    private TextBlock CreateCorruptedItem()
+    {
+      return new TextBlock()
+      {
+        Text = "Corrupted",
+        Foreground = GetPropertyColor(PropertyColor.Fire),
+        TextAlignment = TextAlignment.Center,
+        FontWeight = FontWeights.Bold
+      };
     }
 
     private bool HasMods(List<string[]> mods)
@@ -78,10 +90,6 @@ namespace PerandusBacker.Controls
         if (Item.Properties != null)
         {
           properties.Add((Item.Properties, Orientation.Vertical));
-        }
-        if (Item.AdditionalProperties != null)
-        {
-          properties.Add((Item.AdditionalProperties, Orientation.Vertical));
         }
         if (Item.Requirements != null)
         {
@@ -107,6 +115,7 @@ namespace PerandusBacker.Controls
 
       switch (color)
       {
+        case PropertyColor.Normal: brush.Color = ColorHelper.FromArgb(255, 50, 49, 48); break;
         case PropertyColor.Magic: brush.Color = ColorHelper.FromArgb(255, 0, 78, 140); break;
         case PropertyColor.Cold: brush.Color = ColorHelper.FromArgb(255, 0, 183, 195); break;
         case PropertyColor.Fire: brush.Color = ColorHelper.FromArgb(255, 164, 38, 44); break;
@@ -207,14 +216,20 @@ namespace PerandusBacker.Controls
             new MenuFlyoutSeparator() { Margin = new Thickness(0, 4, 0, 4) }
           );
         }
-      } 
+      }
 
       return panel;
     }
 
     private TextBlock CreateModItem(string mod)
     {
-      return new TextBlock() { Text = mod, Foreground = GetPropertyColor(PropertyColor.Magic), HorizontalAlignment = HorizontalAlignment.Center };
+      return new TextBlock()
+      {
+        Text = mod,
+        Foreground = GetPropertyColor(PropertyColor.Magic),
+        TextAlignment = TextAlignment.Center,
+        TextWrapping = TextWrapping.WrapWholeWords
+      };
     }
 
     private StackPanel CreateModsList(string[] mods)
@@ -229,7 +244,8 @@ namespace PerandusBacker.Controls
       return panel;
     }
 
-    private StackPanel CreateModsPanel(List<string[]> modsList) {
+    private StackPanel CreateModsPanel(List<string[]> modsList)
+    {
       StackPanel panel = new StackPanel();
       panel.Orientation = Orientation.Vertical;
 
@@ -241,7 +257,7 @@ namespace PerandusBacker.Controls
           CreateModsList(mods)
         );
 
-        if (i != modsList.Count - 1)
+        if (i != modsList.Count - 1 || IsCorrupted)
         {
           panel.Children.Add(
             new MenuFlyoutSeparator() { Margin = new Thickness(0, 4, 0, 4) }

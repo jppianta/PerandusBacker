@@ -73,7 +73,14 @@ namespace PerandusBacker.Controls
       for (int i = 0; i < Item.Sockets?.Length; i++)
       {
         int level = i / Item.Width;
-        int position = level % 2 == 0 ? i % Item.Width : (i + 1) % Item.Width;
+        int position = i % Item.Width;
+
+        // If level is odd and the sockets for that level are filled or the item is a shield,
+        // fill the sockets from right to left
+        if (level % 2 != 0 && ((Item.Sockets.Length >= (level + 1) * Item.Width) || Item.IsShield))
+        {
+          position = (i + 1) % Item.Width;
+        }
 
         Binding binding = new Binding();
         binding.Mode = BindingMode.OneWay;

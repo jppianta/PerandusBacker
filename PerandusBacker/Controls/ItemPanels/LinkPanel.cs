@@ -99,7 +99,9 @@ namespace PerandusBacker.Controls
 
             if (startLevel != endLevel)
             {
-              if (endLevel % 2 != 0 && Item.Sockets.Length >= (endLevel + 1) * Item.Width)
+              // If ending level is odd and the sockets for that level are filled or the item is a shield,
+              // link sockets from right to left
+              if (endLevel % 2 != 0 && ((Item.Sockets.Length >= (endLevel + 1) * Item.Width) || Item.IsShield))
               {
                 endPos = (endPos + 1) % Item.Width;
               }

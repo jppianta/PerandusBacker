@@ -2,8 +2,13 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+  xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
   xmlns:helper="using:PerandusBacker.Utils"
   xmlns:local="using:PerandusBacker.Controls">
+
+  <!--
+    Converters
+  -->
 
   <helper:SocketColourConverter
     x:Key="SocketColourConverter" />
@@ -15,6 +20,16 @@
     x:Key="HasProperty" />
   <helper:RarityToColor
     x:Key="RarityToColorConverter" />
+
+  <!---->
+
+  <!--
+    Controls
+  -->
+
+  <!--
+    SocketPanel
+  -->
 
   <Style
     TargetType="local:SocketPanel">
@@ -34,6 +49,12 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <!---->
+
+  <!--
+    Socket
+  -->
 
   <Style
     TargetType="local:Socket">
@@ -70,6 +91,12 @@
     </Setter>
   </Style>
 
+  <!---->
+
+  <!--
+    LinkPanel
+  -->
+
   <Style
     TargetType="local:LinkPanel">
     <Setter
@@ -86,6 +113,12 @@
     </Setter>
   </Style>
 
+  <!---->
+
+  <!--
+    ItemVisualizer
+  -->
+
   <Style
     TargetType="local:ItemVisualizer">
     <Setter
@@ -94,7 +127,8 @@
         <ControlTemplate
           TargetType="local:ItemVisualizer">
           <Grid
-            Padding="12">
+            MaxWidth="450"
+            Padding="12,7">
             <Grid.RowDefinitions>
               <RowDefinition
                 Height="Auto" />
@@ -136,9 +170,9 @@
                 Grid.Row="1"
                 x:Name="SocketPanel" />
 
-              <local:IntemInfoPanel
+              <local:ItemInfoPanel
                 Grid.Row="2"
-                x:Name="IntemInfoPanel" />
+                x:Name="ItemInfoPanel" />
 
             </Grid>
           </Grid>
@@ -146,6 +180,12 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <!---->
+
+  <!--
+    PriceBar
+  -->
 
   <Style
     TargetType="local:PriceBar">
@@ -186,13 +226,17 @@
     </Setter>
   </Style>
 
+  <!--
+    ItemInfoPanel
+  -->
+
   <Style
-    TargetType="local:IntemInfoPanel">
+    TargetType="local:ItemInfoPanel">
     <Setter
       Property="Template">
       <Setter.Value>
         <ControlTemplate
-          TargetType="local:IntemInfoPanel">
+          TargetType="local:ItemInfoPanel">
           <StackPanel
             x:Name="InfoStackPanel"
             Orientation="Vertical" />
@@ -200,4 +244,80 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <!---->
+
+  <!--
+    ItemsTable
+  -->
+
+  <Style
+    TargetType="local:ItemsTable">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:ItemsTable">
+          <toolkit:DataGrid
+            x:Name="StashGrid"
+            AutoGenerateColumns="False"
+            RowGroupHeaderPropertyNameAlternative="Stash"
+            CanUserSortColumns="True"
+            SelectionMode="Single"
+            AreRowDetailsFrozen="True"
+            RowDetailsVisibilityMode="VisibleWhenSelected">
+            <toolkit:DataGrid.Resources>
+              <Style
+                TargetType="toolkit:DataGridCell">
+                <Setter
+                  Property="MinHeight"
+                  Value="24" />
+                <Setter
+                  Property="Height"
+                  Value="24" />
+                <Setter
+                  Property="FontSize"
+                  Value="12" />
+                <Setter
+                  Property="Template"
+                  Value="{x:Null}" />
+              </Style>
+
+            </toolkit:DataGrid.Resources>
+
+            <toolkit:DataGrid.Columns>
+              <toolkit:DataGridTemplateColumn
+                Tag="FullName"
+                Header="Name">
+                <toolkit:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock
+                      Margin="12,0,0,0"
+                      VerticalAlignment="Center"
+                      Text="{Binding FullName}"
+                      Foreground="{Binding FrameType, Converter={StaticResource RarityToColorConverter}}" />
+                  </DataTemplate>
+                </toolkit:DataGridTemplateColumn.CellTemplate>
+              </toolkit:DataGridTemplateColumn>
+              <toolkit:DataGridTextColumn
+                Header="Price"
+                Tag="Price"
+                Binding="{Binding FullPrice}" />
+              <toolkit:DataGridTextColumn
+                Header="Quality"
+                Tag="Quality"
+                Binding="{Binding QualityText}" />
+              <toolkit:DataGridTextColumn
+                Header="Physical Damage"
+                Tag="Physical Damage"
+                Binding="{Binding PhysicalDamageText}" />
+            </toolkit:DataGrid.Columns>
+          </toolkit:DataGrid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!---->
+
 </ResourceDictionary>

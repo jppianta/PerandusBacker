@@ -22,7 +22,7 @@ namespace PerandusBacker.Controls
     private StashItem Item = null;
     private LinkPanel linkPanel;
     private SocketPanel socketPanel;
-    private IntemInfoPanel infoPanel;
+    private ItemInfoPanel infoPanel;
     public ItemVisualizer()
     {
       this.DefaultStyleKey = typeof(ItemVisualizer);
@@ -51,7 +51,7 @@ namespace PerandusBacker.Controls
     {
       linkPanel = GetTemplateChild("LinkPanel") as LinkPanel;
       socketPanel = GetTemplateChild("SocketPanel") as SocketPanel;
-      infoPanel = GetTemplateChild("IntemInfoPanel") as IntemInfoPanel;
+      infoPanel = GetTemplateChild("ItemInfoPanel") as ItemInfoPanel;
 
       if (linkPanel != null && socketPanel != null)
       {
