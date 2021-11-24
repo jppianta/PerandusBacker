@@ -13,6 +13,7 @@ namespace PerandusBacker.Stash
     Cold,
     Lightning,
     Fire,
+    Chaos,
   }
   public class PropertyValue
   {

@@ -59,12 +59,16 @@
     <Content Remove="Assets\Wide310x150Logo.scale-400.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Controls\ItemsTable.xaml" />
+    <None Remove="Controls\ItemPanels\Generic.xaml" />
     <None Remove="Pages\Login.xaml" />
     <None Remove="Pages\Main.xaml" />
     <None Remove="Pages\Navigation\StashDashboard\StashExplorer.xaml" />
     <None Remove="Pages\Navigation\StashDashboard\TabView.xaml" />
+    <None Remove="ThemeColors.xaml" />
     <None Remove="Themes\SocketPanel.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="Controls\ItemPanels\Generic.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -93,12 +97,18 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Pages\Navigation\StashDashboard\TabView.xaml">
+    <Resource Include="Controls\ItemPanels\Generic.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="ThemeColors.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Controls\ItemsTable.xaml">
+    <Page Update="Pages\Navigation\StashDashboard\TabView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

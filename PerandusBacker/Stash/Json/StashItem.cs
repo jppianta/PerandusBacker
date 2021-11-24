@@ -105,6 +105,9 @@ namespace PerandusBacker.Stash.Json
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    [JsonPropertyName("corrupted")]
+    public bool Corrupted { get; set; }
+
     public string FullName { get => Name == "" ? TypeLine : $"{Name} {TypeLine}"; }
 
     [JsonPropertyName("typeLine")]
@@ -147,6 +150,18 @@ namespace PerandusBacker.Stash.Json
       }
     }
 
+    private T RetrieveProperty<T>(string propertyName, Func<string, T> parser, T defaultValue)
+    {
+      if (ValueablePropertyIndexes.ContainsKey(propertyName))
+      {
+        ItemProperty property = Properties[ValueablePropertyIndexes[propertyName]];
+
+        return parser(property.Values[0].Value);
+      }
+
+      return defaultValue;
+    }
+
     private string RetrieveProperty(string propertyName)
     {
       if (ValueablePropertyIndexes.ContainsKey(propertyName))
@@ -159,12 +174,37 @@ namespace PerandusBacker.Stash.Json
       return "";
     }
 
-    public string Quality { get => RetrieveProperty("Quality"); }
+    public int Quality
+    {
+      get
+      {
+        return RetrieveProperty("Quality", (text) =>
+        {
+          return Int32.Parse(text.TrimStart('+').TrimEnd('%'));
+        }, 0);
+      }
+    }
 
-    public string PhysicalDamage { get => RetrieveProperty("Physical Damage"); }
+    public string QualityText { get => RetrieveProperty("Quality"); }
+
+    public int PhysicalDamage
+    {
+      get
+      {
+        return RetrieveProperty("Physical Damage", (text) =>
+        {
+          string[] splitted = text.Split('-');
+          return Int32.Parse(splitted[0]);
+        }, 0);
+      }
+    }
+
+    public string PhysicalDamageText { get => RetrieveProperty("Physical Damage"); }
 
     public Dictionary<string, int> ValueablePropertyIndexes = new Dictionary<string, int>();
     public ItemProperty[] Properties { get; set; }
+
+    public bool IsShield { get => ValueablePropertyIndexes.ContainsKey("Chance to Block"); }
 
     [JsonPropertyName("additionalProperties")]
     public ItemPropertyJson[] _AdditionalProperties

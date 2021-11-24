@@ -38,6 +38,32 @@ namespace PerandusBacker.Stash
     {
       switch (columnName)
       {
+        case "Quality":
+          if (ascending)
+          {
+            return from item in Items
+                   orderby item.Quality ascending
+                   select item;
+          }
+          else
+          {
+            return from item in Items
+                   orderby item.Quality descending
+                   select item;
+          }
+        case "Physical Damage":
+          if (ascending)
+          {
+            return from item in Items
+                   orderby item.PhysicalDamage ascending
+                   select item;
+          }
+          else
+          {
+            return from item in Items
+                   orderby item.PhysicalDamage descending
+                   select item;
+          }
         default:
           if (ascending)
           {
