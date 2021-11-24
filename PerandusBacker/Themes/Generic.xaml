@@ -1,0 +1,203 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
+  xmlns:helper="using:PerandusBacker.Utils"
+  xmlns:local="using:PerandusBacker.Controls">
+
+  <helper:SocketColourConverter
+    x:Key="SocketColourConverter" />
+  <helper:ImageItemSize
+    x:Key="ImageItemSizeConverter" />
+  <helper:PropertyTypeToColor
+    x:Key="PropertyTypeToColor" />
+  <helper:HasProperty
+    x:Key="HasProperty" />
+  <helper:RarityToColor
+    x:Key="RarityToColorConverter" />
+
+  <Style
+    TargetType="local:SocketPanel">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:SocketPanel">
+          <Grid
+            x:Name="SocketGrid"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            ColumnSpacing="10"
+            RowSpacing="10">
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style
+    TargetType="local:Socket">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:Socket">
+          <Grid>
+            <Ellipse
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              StrokeThickness="5"
+              Stroke="{Binding Colour, Converter={StaticResource SocketColourConverter}}"
+              Height="30"
+              Width="30" />
+            <Ellipse
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              StrokeThickness="1"
+              Stroke="Gold"
+              Height="20"
+              Width="20">
+              <Ellipse.Fill>
+                <brushes:AcrylicBrush
+                  TintColor="Black"
+                  TintOpacity="0.32"
+                  BlurAmount="0" />
+              </Ellipse.Fill>
+            </Ellipse>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style
+    TargetType="local:LinkPanel">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:LinkPanel">
+          <Canvas
+            x:Name="LinkPanel"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style
+    TargetType="local:ItemVisualizer">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:ItemVisualizer">
+          <Grid
+            Padding="12">
+            <Grid.RowDefinitions>
+              <RowDefinition
+                Height="Auto" />
+              <RowDefinition
+                Height="*" />
+            </Grid.RowDefinitions>
+            <Grid
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              RowSpacing="25"
+              Grid.Row="0">
+              <Grid.RowDefinitions>
+                <RowDefinition
+                  Height="Auto" />
+                <RowDefinition
+                  Height="Auto" />
+                <RowDefinition
+                  Height="*" />
+              </Grid.RowDefinitions>
+              <TextBlock
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                Text="{Binding FullName}"
+                Foreground="{Binding FrameType, Converter={StaticResource RarityToColorConverter}}" />
+
+              <Image
+                Grid.Row="1"
+                Height="{Binding Height, ConverterParameter='50', Converter={StaticResource ImageItemSizeConverter}}"
+                Width="{Binding Width, ConverterParameter='50', Converter={StaticResource ImageItemSizeConverter}}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Source="{Binding Icon}" />
+
+              <local:LinkPanel
+                Grid.Row="1"
+                x:Name="LinkPanel" />
+
+              <local:SocketPanel
+                Grid.Row="1"
+                x:Name="SocketPanel" />
+
+              <local:IntemInfoPanel
+                Grid.Row="2"
+                x:Name="IntemInfoPanel" />
+
+            </Grid>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style
+    TargetType="local:PriceBar">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:PriceBar">
+          <Grid
+            Grid.Row="1"
+            Padding="8"
+            ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition
+                Width="Auto" />
+              <ColumnDefinition
+                Width="Auto" />
+              <ColumnDefinition
+                Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+              VerticalAlignment="Center"
+              Text="Price" />
+            <ComboBox
+              Grid.Column="1"
+              VerticalAlignment="Center"
+              x:Name="CurrencyComboBox"
+              MinWidth="150" />
+            <NumberBox
+              Grid.Column="2"
+              VerticalAlignment="Center"
+              x:Name="CurrencyCountBox"
+              Value="0"
+              SpinButtonPlacementMode="Inline" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style
+    TargetType="local:IntemInfoPanel">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:IntemInfoPanel">
+          <StackPanel
+            x:Name="InfoStackPanel"
+            Orientation="Vertical" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

@@ -17,8 +17,9 @@
     CanUserSortColumns="True"
     Sorting="SortColumn"
     SelectionMode="Single"
-    RowDetailsVisibilityMode="VisibleWhenSelected"
-    RowDetailsVisibilityChanged="OnDetailsVisibility">
+    AreRowDetailsFrozen="True"
+    SelectionChanged="OnSelectionChanged"
+    RowDetailsVisibilityMode="VisibleWhenSelected">
     <toolkit:DataGrid.Resources>
       <Style
         TargetType="toolkit:DataGridCell">
@@ -35,9 +36,15 @@
           Property="Template"
           Value="{x:Null}" />
       </Style>
-      <SolidColorBrush
-        x:Key="DataGridDetailsPresenterBackgroundBrush"
-        Color="Transparent" />
+      <Color
+        x:Key="DataGridRowHoveredBackgroundColor">
+        #FCE9E9</Color>
+      <Color
+        x:Key="DataGridRowSelectedBackgroundColor">
+        #F5CCCC</Color>
+      <Color
+        x:Key="DataGridRowSelectedHoveredBackgroundColor">
+        #F1BBBB</Color>
       <helper:RarityToColor
         x:Key="RarityToColorConverter" />
       <helper:ImageItemSize
@@ -50,168 +57,9 @@
         x:Key="SocketDirection" />
       <helper:HasProperty
         x:Key="HasProperty" />
+      <helper:PropertyTypeToColor
+        x:Key="PropertyTypeToColor" />
     </toolkit:DataGrid.Resources>
-
-    <toolkit:DataGrid.RowDetailsTemplate>
-      <DataTemplate>
-        <Grid
-          Padding="12">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition
-              Width="Auto" />
-            <ColumnDefinition
-              Width="*" />
-          </Grid.ColumnDefinitions>
-          <Grid
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Grid.Column="0">
-            <Grid.RowDefinitions>
-              <RowDefinition
-                Height="*" />
-            </Grid.RowDefinitions>
-            <Image
-              Height="{Binding Height, ConverterParameter='50', Converter={StaticResource ImageItemSizeConverter}}"
-              Width="{Binding Width, ConverterParameter='50', Converter={StaticResource ImageItemSizeConverter}}"
-              VerticalAlignment="Center"
-              HorizontalAlignment="Center"
-              Source="{Binding Icon}" />
-
-            <GridView
-              Name="SocketPanel"
-              Loaded="OnLoaded"
-              VerticalAlignment="Center"
-              HorizontalAlignment="Center"
-              Height="{Binding Height, ConverterParameter='50', Converter={StaticResource SocketItemSize}}"
-              Width="{Binding Width, ConverterParameter='50', Converter={StaticResource SocketItemSize}}"
-              ItemsSource="{Binding Sockets}"
-              SelectionMode="None"
-              ScrollViewer.VerticalScrollBarVisibility="Disabled">
-              <GridView.ItemTemplate>
-                <DataTemplate>
-                  <Grid
-                    Height="30"
-                    Width="30">
-                    <Ellipse
-                      VerticalAlignment="Center"
-                      HorizontalAlignment="Center"
-                      StrokeThickness="5"
-                      Stroke="{Binding Colour, Converter={StaticResource SocketColourConverter}}"
-                      Height="30"
-                      Width="30" />
-                    <Ellipse
-                      VerticalAlignment="Center"
-                      HorizontalAlignment="Center"
-                      StrokeThickness="1"
-                      Stroke="Gold"
-                      Height="20"
-                      Width="20">
-                      <Ellipse.Fill>
-                        <brushes:AcrylicBrush
-                          TintColor="Black"
-                          TintOpacity="0.32"
-                          BlurAmount="0" />
-                      </Ellipse.Fill>
-                    </Ellipse>
-                  </Grid>
-                </DataTemplate>
-              </GridView.ItemTemplate>
-              <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                  <ItemsWrapGrid
-                    FlowDirection="{Binding Properties, Converter={StaticResource SocketDirection}}"
-                    MaximumRowsOrColumns="{Binding Width}"
-                    Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-              </GridView.ItemsPanel>
-
-              <GridView.Resources>
-                <Style
-                  TargetType="GridViewItem">
-                  <Setter
-                    Property="Margin"
-                    Value="10" />
-                  <Setter
-                    Property="MinHeight"
-                    Value="15" />
-                  <Setter
-                    Property="MinWidth"
-                    Value="15" />
-                </Style>
-              </GridView.Resources>
-            </GridView>
-
-            <Canvas
-              Name="LinkPanel"
-              Height="{Binding Height, ConverterParameter='50', Converter={StaticResource SocketItemSize}}"
-              Width="{Binding Width, ConverterParameter='50', Converter={StaticResource SocketItemSize}}" />
-
-          </Grid>
-          <StackPanel
-            HorizontalAlignment="Left"
-            MaxWidth="440"
-            Grid.Column="1"
-            Orientation="Vertical">
-            <ItemsRepeater
-              ItemsSource="{Binding Properties}">
-              <ItemsRepeater.ItemTemplate>
-                <DataTemplate>
-                  <StackPanel
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-                    <TextBlock
-                      Text="{Binding Name}" />
-                    <TextBlock
-                      Margin="0,0,4,0"
-                      Text="{Binding ConverterParameter=':', Converter={StaticResource HasProperty}}" />
-                    <TextBlock
-                      Text="{Binding Converter={StaticResource HasProperty}}" />
-                  </StackPanel>
-                </DataTemplate>
-              </ItemsRepeater.ItemTemplate>
-              <ItemsRepeater.Layout>
-                <StackLayout
-                  Orientation="Vertical"
-                  Spacing="4" />
-              </ItemsRepeater.Layout>
-            </ItemsRepeater>
-
-            <MenuFlyoutSeparator />
-
-            <StackPanel
-              HorizontalAlignment="Center"
-              Orientation="Horizontal"
-              Spacing="4">
-              <TextBlock
-                Text="Requires" />
-              <ItemsRepeater
-                ItemsSource="{Binding Requirements}">
-                <ItemsRepeater.ItemTemplate>
-                  <DataTemplate>
-                    <StackPanel
-                      HorizontalAlignment="Center"
-                      Orientation="Horizontal">
-                      <TextBlock
-                        Text="{Binding Name}" />
-                      <TextBlock
-                        Margin="0,0,4,0"
-                        Text="{Binding ConverterParameter=':', Converter={StaticResource HasProperty}}" />
-                      <TextBlock
-                        Text="{Binding Converter={StaticResource HasProperty}}" />
-                    </StackPanel>
-                  </DataTemplate>
-                </ItemsRepeater.ItemTemplate>
-                <ItemsRepeater.Layout>
-                  <StackLayout
-                    Orientation="Horizontal"
-                    Spacing="4" />
-                </ItemsRepeater.Layout>
-              </ItemsRepeater>
-            </StackPanel>
-          </StackPanel>
-        </Grid>
-      </DataTemplate>
-    </toolkit:DataGrid.RowDetailsTemplate>
 
     <toolkit:DataGrid.Columns>
       <toolkit:DataGridTemplateColumn
@@ -230,6 +78,12 @@
       <toolkit:DataGridTextColumn
         Header="Price"
         Binding="{Binding FullPrice}" />
+      <toolkit:DataGridTextColumn
+        Header="Quality"
+        Binding="{Binding Quality}" />
+      <toolkit:DataGridTextColumn
+        Header="Physical Damage"
+        Binding="{Binding PhysicalDamage}" />
     </toolkit:DataGrid.Columns>
   </toolkit:DataGrid>
 </UserControl>

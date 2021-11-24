@@ -15,6 +15,11 @@
     OpenPaneLength="150"
     IsBackButtonVisible="Collapsed"
     SelectionChanged="OnSelectionChanged">
+    <NavigationView.Resources>
+      <SolidColorBrush
+        x:Key="NavigationViewSelectionIndicatorForeground"
+        Color="{ThemeResource SystemAccentColor}" />
+    </NavigationView.Resources>
     <NavigationView.MenuItems>
       <NavigationViewItem
         Content="Stash"

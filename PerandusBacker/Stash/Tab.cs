@@ -30,13 +30,6 @@ namespace PerandusBacker.Stash
       {
         item.TabInfo = Info;
 
-        if (item.Sockets != null)
-        {
-          if (item.Sockets.Length > 3)
-          {
-            (item.Sockets[2].Colour, item.Sockets[3].Colour) = (item.Sockets[3].Colour, item.Sockets[2].Colour);
-          }
-        }
         Items.Add(item);
       }
     }

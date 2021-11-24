@@ -3,6 +3,7 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="using:PerandusBacker.Pages.Navigation.StashDashboard"
+  xmlns:controls="using:PerandusBacker.Controls"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
@@ -11,9 +12,12 @@
   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Page.Resources>
-    <DataTemplate x:Name="HeaderTemplate">
-      <Grid Padding="4,0,8,0">
-        <TextBlock Text="{Binding}" />
+    <DataTemplate
+      x:Name="HeaderTemplate">
+      <Grid
+        Padding="4,0,8,0">
+        <TextBlock
+          Text="{Binding}" />
       </Grid>
     </DataTemplate>
   </Page.Resources>
@@ -23,16 +27,42 @@
       <RowDefinition
         Height="*" />
     </Grid.RowDefinitions>
-    <TabView
-      TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
-      x:Name="TabControl"
-      IsAddTabButtonVisible="False"
-      TabWidthMode="SizeToContent"
-      CanReorderTabs="True" />
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition
+          Height="*" />
+        <RowDefinition
+          Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid
+        Grid.Row="0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition
+            Width="*" />
+          <ColumnDefinition
+            Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TabView
+          x:Name="TabControl"
+          Grid.Column="0"
+          TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
+          IsAddTabButtonVisible="False"
+          TabWidthMode="SizeToContent"
+          CanReorderTabs="True" />
+        <toolkit:Expander
+          Grid.Column="1"
+          Header="Item"
+          IsExpanded="False"
+          ExpandDirection="Left">
+          <controls:ItemVisualizer />
+        </toolkit:Expander>
+      </Grid>
+      <controls:PriceBar
+        Grid.Row="1" />
+    </Grid>
 
     <toolkit:Loading
       x:Name="LoadingControl"
-      Foreground="{ThemeResource SystemAccentColor}"
       Grid.Row="1">
       <toolkit:Loading.Background>
         <brushes:AcrylicBrush
@@ -43,7 +73,8 @@
       <ProgressRing
         IsActive="True"
         Height="50"
-        Width="50" />
+        Width="50"
+        Foreground="{ThemeResource SystemAccentColor}" />
     </toolkit:Loading>
   </Grid>
 </Page>

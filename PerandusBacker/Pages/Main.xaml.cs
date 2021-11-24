@@ -16,7 +16,7 @@ namespace PerandusBacker.Pages
     public Main()
     {
       this.InitializeComponent();
-      Events.ResizeWindow(800, 600);
+      Events.ResizeWindow(1400, 800);
     }
 
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

@@ -1,14 +1,31 @@
-﻿using Microsoft.UI.Xaml.Data;
-using PerandusBacker.Stash.Json;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using System;
+
+using PerandusBacker.Stash;
+using PerandusBacker.Stash.Json;
 
 namespace PerandusBacker.Utils
 {
-  public class RarityToColor : IValueConverter
-  {
+  public class Converter : IValueConverter {
     #region IValueConverter Members
 
-    public object Convert(object value, Type targetType, object parameter, string language)
+    public virtual object Convert(object value, Type targetType, object parameter, string language)
+    {
+      throw new NotImplementedException();
+    }
+
+    // ConvertBack is not implemented for a OneWay binding.
+    public virtual object ConvertBack(object value, Type targetType, object parameter, string language)
+    {
+      throw new NotImplementedException();
+    }
+
+    #endregion
+  }
+  public class RarityToColor : Converter
+  {
+    public override object Convert(object value, Type targetType, object parameter, string language)
     {
       // The value parameter is the data from the source object.
       ItemFrame rarity = (ItemFrame)value;
@@ -16,27 +33,35 @@ namespace PerandusBacker.Utils
       switch (rarity)
       {
         case ItemFrame.Unique: return "#da3b01";
-        case ItemFrame.Rare: return "#c19c00";
+        case ItemFrame.Rare: return "#8F7200";
         case ItemFrame.Magic: return "#004e8c";
         case ItemFrame.Gem: return "#5c2e91";
         default: return "#323130";
       }
     }
-
-    // ConvertBack is not implemented for a OneWay binding.
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
   }
 
-  public class ImageItemSize : IValueConverter
+  public class PropertyTypeToColor : Converter
   {
-    #region IValueConverter Members
+    public override object Convert(object value, Type targetType, object parameter, string language)
+    {
+      // The value parameter is the data from the source object.
+      PropertyColor color = (PropertyColor)value;
 
-    public object Convert(object value, Type targetType, object parameter, string language)
+      switch (color)
+      {
+        case PropertyColor.Magic: return "#004e8c";
+        case PropertyColor.Cold: return "#00b7c3";
+        case PropertyColor.Fire: return "#a4262c";
+        case PropertyColor.Lightning: return "#c19c00";
+        default: return "#323130";
+      }
+    }
+  }
+
+  public class ImageItemSize : Converter
+  {
+    public override object Convert(object value, Type targetType, object parameter, string language)
     {
       // The value parameter is the data from the source object.
       int item = (int)value;
@@ -44,21 +69,18 @@ namespace PerandusBacker.Utils
 
       return item * multiplier;
     }
-
-    // ConvertBack is not implemented for a OneWay binding.
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
+  }
+  public class IsNull : Converter
+  {
+    public override object Convert(object value, Type targetType, object parameter, string language)
     {
-      throw new NotImplementedException();
+      return value == null ? Visibility.Collapsed : Visibility.Visible;
     }
-
-    #endregion
   }
 
-  public class SocketItemSize : IValueConverter
+  public class SocketItemSize : Converter
   {
-    #region IValueConverter Members
-
-    public object Convert(object value, Type targetType, object parameter, string language)
+    public override object Convert(object value, Type targetType, object parameter, string language)
     {
       // The value parameter is the data from the source object.
       int item = (int)value;
@@ -67,21 +89,11 @@ namespace PerandusBacker.Utils
 
       return item * multiplier;
     }
-
-    // ConvertBack is not implemented for a OneWay binding.
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
   }
 
-  public class SocketColourConverter : IValueConverter
+  public class SocketColourConverter : Converter
   {
-    #region IValueConverter Members
-
-    public object Convert(object value, Type targetType, object parameter, string language)
+    public override object Convert(object value, Type targetType, object parameter, string language)
     {
       // The value parameter is the data from the source object.
       SocketColour item = (SocketColour)value;
@@ -94,21 +106,11 @@ namespace PerandusBacker.Utils
         default: return "#faf9f8";
       }
     }
-
-    // ConvertBack is not implemented for a OneWay binding.
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
   }
 
-  public class SocketDirection : IValueConverter
+  public class SocketDirection : Converter
   {
-    #region IValueConverter Members
-
-    public object Convert(object value, Type targetType, object parameter, string language)
+    public override object Convert(object value, Type targetType, object parameter, string language)
     {
       // The value parameter is the data from the source object.
       ItemProperty[] item = (ItemProperty[])value;
@@ -120,35 +122,17 @@ namespace PerandusBacker.Utils
 
       return "LeftToRight";
     }
-
-    // ConvertBack is not implemented for a OneWay binding.
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
   }
 
-  public class HasProperty : IValueConverter
+  public class HasProperty : Converter
   {
-    #region IValueConverter Members
-
-    public object Convert(object value, Type targetType, object parameter, string language)
+    public override object Convert(object value, Type targetType, object parameter, string language)
     {
       // The value parameter is the data from the source object.
       ItemProperty property = (ItemProperty)value;
-      string val = parameter == null ? property.Value : (string)parameter;
-
-      return property.Value == "" ? "" : val;
+      return property.Values.Length > 0 ?
+         (parameter == null ? property.Values[0].Value : (string)parameter) :
+         "";
     }
-
-    // ConvertBack is not implemented for a OneWay binding.
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
-    {
-      throw new NotImplementedException();
-    }
-
-    #endregion
   }
 }

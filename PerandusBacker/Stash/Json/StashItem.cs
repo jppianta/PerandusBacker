@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 using PerandusBacker.Utils;
+using PerandusBacker.Stash;
 
 namespace PerandusBacker.Stash.Json
 {
@@ -48,20 +50,6 @@ namespace PerandusBacker.Stash.Json
     public string sColour { get => ""; set => Colour = ToColour(value); }
   }
 
-  public class ItemProperty
-  {
-    public string Value { get; set; }
-    [JsonPropertyName("values")]
-    public object[][] _Value
-    {
-      get => new object[0][];
-      set => Value = value.Length > 0 ? value[0][0].ToString() : "";
-    }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-  }
-
   public class StashItem : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
@@ -99,6 +87,8 @@ namespace PerandusBacker.Stash.Json
     }
 
     public string FullPrice { get => PriceCount > 0 && PriceCurrency != null ? $"{PriceCount} {Data.CurrencyMap(PriceCurrency)}" : ""; }
+
+    public Dictionary<string, ItemProperty> PropertyDictionary = new Dictionary<string, ItemProperty>();
 
     [JsonPropertyName("w")]
     public int Width { get; set; }
@@ -148,12 +138,56 @@ namespace PerandusBacker.Stash.Json
     public int MaxStackSize { get; set; }
 
     [JsonPropertyName("properties")]
+    public ItemPropertyJson[] _Properties
+    {
+      get => null;
+      set
+      {
+        (ValueablePropertyIndexes, Properties) = ItemProperties.ParseItemProperties(value);
+      }
+    }
+
+    private string RetrieveProperty(string propertyName)
+    {
+      if (ValueablePropertyIndexes.ContainsKey(propertyName))
+      {
+        ItemProperty property = Properties[ValueablePropertyIndexes[propertyName]];
+
+        return property.Values[0].Value;
+      }
+
+      return "";
+    }
+
+    public string Quality { get => RetrieveProperty("Quality"); }
+
+    public string PhysicalDamage { get => RetrieveProperty("Physical Damage"); }
+
+    public Dictionary<string, int> ValueablePropertyIndexes = new Dictionary<string, int>();
     public ItemProperty[] Properties { get; set; }
 
     [JsonPropertyName("additionalProperties")]
+    public ItemPropertyJson[] _AdditionalProperties
+    {
+      get => null;
+      set
+      {
+        (_, AdditionalProperties) = ItemProperties.ParseItemProperties(value);
+      }
+    }
+
     public ItemProperty[] AdditionalProperties { get; set; }
 
     [JsonPropertyName("requirements")]
+    public ItemPropertyJson[] _Requirements
+    {
+      get => null;
+      set
+      {
+        (_, Requirements) = ItemProperties.ParseItemProperties(value);
+      }
+    }
+
     public ItemProperty[] Requirements { get; set; }
 
     [JsonPropertyName("implicitMods")]

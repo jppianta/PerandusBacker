@@ -64,6 +64,7 @@
     <None Remove="Pages\Main.xaml" />
     <None Remove="Pages\Navigation\StashDashboard\StashExplorer.xaml" />
     <None Remove="Pages\Navigation\StashDashboard\TabView.xaml" />
+    <None Remove="Themes\SocketPanel.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -113,6 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="Pages\Navigation\StashDashboard\StashExplorer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

@@ -6,6 +6,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:controls="using:PerandusBacker.Controls"
+  xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
   mc:Ignorable="d"
   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -13,41 +14,9 @@
     <Grid.RowDefinitions>
       <RowDefinition
         Height="*" />
-      <RowDefinition
-        Height="Auto" />
     </Grid.RowDefinitions>
     <controls:ItemsTable
-      Grid.Row="0"
-      StashTabIndex="{x:Bind StashTabIndex, Mode=OneWay}" />
-    <Grid
-      Grid.Row="1"
-      Padding="8"
-      ColumnSpacing="8">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition
-          Width="Auto" />
-        <ColumnDefinition
-          Width="Auto" />
-        <ColumnDefinition
-          Width="Auto" />
-      </Grid.ColumnDefinitions>
-      <TextBlock
-        VerticalAlignment="Center"
-        Text="Price" />
-      <ComboBox
-        Grid.Column="1"
-        VerticalAlignment="Center"
-        x:Name="CurrencyComboBox"
-        ItemsSource="{x:Bind Currencies}"
-        MinWidth="150"
-        SelectionChanged="OnCurrencySelected" />
-      <NumberBox
-        Grid.Column="2"
-        VerticalAlignment="Center"
-        x:Name="CurrencyCountBox"
-        Value="0"
-        SpinButtonPlacementMode="Inline"
-        ValueChanged="CurrencyCountChanged" />
-    </Grid>
+      Grid.Column="0"
+      StashTabIndex="{x:Bind StashTabIndex}" />
   </Grid>
 </Page>
