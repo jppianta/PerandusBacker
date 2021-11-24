@@ -17,6 +17,6 @@
     </Grid.RowDefinitions>
     <controls:ItemsTable
       Grid.Column="0"
-      StashTabIndex="{x:Bind StashTabIndex}" />
+      StashTab="{x:Bind StashTab}" />
   </Grid>
 </Page>

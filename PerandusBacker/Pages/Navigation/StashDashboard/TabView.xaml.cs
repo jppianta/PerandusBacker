@@ -15,10 +15,10 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
   /// </summary>
   public sealed partial class TabView : Page
   {
-    private int StashTabIndex;
-    public TabView(int tabIndex)
+    private Tab StashTab;
+    public TabView(Tab tab)
     {
-      StashTabIndex = tabIndex;
+      StashTab = tab;
       this.InitializeComponent();
     }
   }

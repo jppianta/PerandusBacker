@@ -51,8 +51,9 @@
           CanReorderTabs="True" />
         <toolkit:Expander
           Grid.Column="1"
+          Background="Transparent"
           Header="Item"
-          IsExpanded="False"
+          IsExpanded="True"
           ExpandDirection="Left">
           <controls:ItemVisualizer />
         </toolkit:Expander>
