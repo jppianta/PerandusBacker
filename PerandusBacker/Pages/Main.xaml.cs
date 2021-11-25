@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Controls;
 
-using PerandusBacker.Json;
+using PerandusBacker.Pages.Navigation;
 using PerandusBacker.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -22,7 +22,11 @@ namespace PerandusBacker.Pages
 
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
-      if (!args.IsSettingsSelected)
+      if (args.IsSettingsSelected)
+      {
+        contentFrame.Navigate(typeof(Settings));
+      }
+      else
       {
         var selectedItem = (NavigationViewItem)args.SelectedItem;
         if (selectedItem != null)
@@ -33,15 +37,6 @@ namespace PerandusBacker.Pages
           contentFrame.Navigate(pageType);
         }
       }
-      else
-      {
-        contentFrame.Navigate(typeof(Page));
-      }
-    }
-
-    private async void OnLoading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
-    {
-      await BackgroundManager.StartBackgroundJob();
     }
   }
 }

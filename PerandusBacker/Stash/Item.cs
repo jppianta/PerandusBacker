@@ -56,6 +56,8 @@ namespace PerandusBacker.Stash
 
     public string Name { get; set; }
 
+    public string InventoryId { get; set; }
+
     public bool Corrupted { get; set; }
 
     public string FullName { get => Name == "" ? TypeLine : $"{Name} {TypeLine}"; }
@@ -92,6 +94,8 @@ namespace PerandusBacker.Stash
 
     public string[] ExplicitMods { get; set; }
 
+    public string PriceCode { get => $"[linkItem location=\"{InventoryId}\" league=\"{Data.League.Id}\" x=\"{X}\"  y=\"{Y}\"]~b/o {FullPrice}"; }
+
     public Item(StashItem item)
     {
       Width = item.Width;
@@ -99,6 +103,7 @@ namespace PerandusBacker.Stash
       Icon = item.Icon;
       Id = item.Id;
       Name = item.Name;
+      InventoryId = item.InventoryId;
       Corrupted = item.Corrupted;
       TypeLine = item.TypeLine;
       BaseType = item.BaseType;

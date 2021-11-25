@@ -32,7 +32,7 @@
       Content="Remember Me"
       x:Name="SaveCredentialsCheckBox" />
     <Button
-      Content="Login"
+      Content="Sign In"
       Click="AttemptLogin" />
   </StackPanel>
 </Page>

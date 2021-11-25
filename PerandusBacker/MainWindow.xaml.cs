@@ -79,7 +79,7 @@ namespace PerandusBacker
 
     private void OnClosed(object sender, WindowEventArgs args)
     {
-      Storage.SaveItemsPrice();
+      Storage.SavePrices();
     }
 
     void ResizeWindow(object sender, ResizeEventArgs args)

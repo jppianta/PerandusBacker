@@ -1,8 +1,11 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 using PerandusBacker.Stash;
+using PerandusBacker.Json;
+using PerandusBacker.Utils;
 
 namespace PerandusBacker.Pages.Navigation.StashDashboard
 {
@@ -15,22 +18,28 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
     public StashExplorer()
     {
       this.InitializeComponent();
-
-      LoadData();
     }
 
-    private async void LoadData()
+    private async void LoadData(Dictionary<string, ItemPriceInfo> items)
     {
       if (!StashManager.HasLoaded)
       {
         LoadingControl.IsLoading = true;
 
-        await StashManager.LoadStashes(true);
+        await StashManager.LoadStashes(items);
 
         LoadingControl.IsLoading = false;
       }
 
       InitializeTabs();
+    }
+
+    private async void InitializeBackgroundTask(Dictionary<string, CurrencyPriceInfo> currencies)
+    {
+      if (!BackgroundManager.IsJobRunning)
+      {
+        await BackgroundManager.StartBackgroundJob(currencies);
+      }
     }
 
     private void InitializeTabs()
@@ -43,18 +52,9 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
       TabControl.SelectedIndex = 0;
     }
 
-    private SymbolIconSource GetIcon(Tab tab)
-    {
-      switch (tab.Info.Type)
-      {
-        case "CurrencyStash": return new SymbolIconSource() { Symbol = Symbol.Placeholder };
-        default: return new SymbolIconSource() { Symbol = Symbol.Placeholder };
-      }
-    }
-
     private TabViewItem CreateTab(Tab tab)
     {
-      
+
 
       TabViewItem newTab = new TabViewItem
       {
@@ -66,6 +66,15 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
       newTab.Content = new TabView(tab);
 
       return newTab;
+    }
+
+    private async void OnLoading(FrameworkElement sender, object args)
+    {
+      Prices prices = await Storage.LoadPrices();
+
+      InitializeBackgroundTask(prices.Currencies);
+
+      LoadData(prices.Items);
     }
   }
 }

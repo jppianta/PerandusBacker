@@ -1,7 +1,16 @@
 ﻿using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace PerandusBacker.Json
 {
+  public class CurrencyPriceInfo
+  {
+    [JsonPropertyName("chaosPrice")]
+    public double ChaosPrice { get; set; }
+
+    [JsonPropertyName("timestamp")]
+    public long TimeStamp { get; set; }
+  }
   public class ItemPriceInfo
   {
     [JsonPropertyName("currency")]
@@ -72,5 +81,13 @@ namespace PerandusBacker.Json
   {
     [JsonPropertyName("exchange")]
     public CurrencyPriceOptions Exchange { get; set; }
+  }
+
+  internal class Prices {
+    [JsonPropertyName("items")]
+    public Dictionary<string, ItemPriceInfo> Items { get; set; }
+
+    [JsonPropertyName("currencies")]
+    public Dictionary<string, CurrencyPriceInfo> Currencies { get; set; }
   }
 }

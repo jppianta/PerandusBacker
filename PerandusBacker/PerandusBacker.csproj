@@ -62,6 +62,7 @@
     <None Remove="Controls\ItemPanels\Generic.xaml" />
     <None Remove="Pages\Login.xaml" />
     <None Remove="Pages\Main.xaml" />
+    <None Remove="Pages\Navigation\Settings.xaml" />
     <None Remove="Pages\Navigation\StashDashboard\StashExplorer.xaml" />
     <None Remove="Pages\Navigation\StashDashboard\TabView.xaml" />
     <None Remove="ThemeColors.xaml" />
@@ -101,6 +102,11 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Pages\Navigation\Settings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="ThemeColors.xaml">

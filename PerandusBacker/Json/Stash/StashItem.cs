@@ -75,6 +75,9 @@ namespace PerandusBacker.Json
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    [JsonPropertyName("inventoryId")]
+    public string InventoryId { get; set; }
+
     [JsonPropertyName("corrupted")]
     public bool Corrupted { get; set; }
 

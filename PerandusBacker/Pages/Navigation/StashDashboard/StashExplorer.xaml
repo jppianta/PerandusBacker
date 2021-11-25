@@ -9,6 +9,7 @@
   xmlns:toolkit="using:CommunityToolkit.WinUI.UI.Controls"
   xmlns:brushes="using:CommunityToolkit.WinUI.UI.Media"
   mc:Ignorable="d"
+  Loading="OnLoading"
   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Page.Resources>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using PerandusBacker.Json;
 
@@ -10,24 +11,31 @@ namespace PerandusBacker.Utils
     public string Image { get; set; }
   }
 
+  internal class PriceInfo {
+    public double ChaosPrice { get; set; }
+
+    public DateTime Time { get; set; }
+  }
+
   internal class Currency
   {
     public string Name { get; set; }
+
     public string ShortName { get; set; }
 
-    public double ChaosPrice { get; set; }
+    public PriceInfo Price { get; set; }
   }
 
   static class Data
   {
-    public static string ThreadId { get; set; }
+    public static string ThreadId = "";
     public static string PoeSessionId { get; set; }
     public static AccountInfo Account = new AccountInfo();
     public static LeagueInfo League = new LeagueInfo();
 
     public static Dictionary<string, Currency> CurrencyMap = new Dictionary<string, Currency>(new[] {
       new KeyValuePair<string, Currency>("Perandus Coin", new Currency() { Name = "Perandus Coin", ShortName = "perandus" }),
-      new KeyValuePair<string, Currency>("Chaos Orb", new Currency() { Name = "Chaos Orb", ShortName = "chaos", ChaosPrice = 1 }),
+      new KeyValuePair<string, Currency>("Chaos Orb", new Currency() { Name = "Chaos Orb", ShortName = "chaos", Price = new PriceInfo() { ChaosPrice = 1 } }),
       new KeyValuePair<string, Currency>("Orb of Alchemy", new Currency() { Name = "Orb of Alchemy", ShortName = "alch" }),
       new KeyValuePair<string, Currency>("Chromatic Orb", new Currency() { Name = "Chromatic Orb", ShortName = "chrom" }),
       new KeyValuePair<string, Currency>("Exalted Orb", new Currency() { Name = "Exalted Orb", ShortName = "exalted" }),
