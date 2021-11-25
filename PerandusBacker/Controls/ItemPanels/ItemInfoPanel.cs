@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 
 using PerandusBacker.Stash;
-using PerandusBacker.Stash.Json;
 
 namespace PerandusBacker.Controls
 {
@@ -15,14 +14,14 @@ namespace PerandusBacker.Controls
   /// </summary>
   public sealed class ItemInfoPanel : Control
   {
-    public StashItem Item
+    public Item Item
     {
-      get => (StashItem)GetValue(ItemProperty);
+      get => (Item)GetValue(ItemProperty);
       set => SetValue(ItemProperty, value);
     }
 
     public static readonly DependencyProperty ItemProperty =
-      DependencyProperty.Register(nameof(Item), typeof(StashItem),
+      DependencyProperty.Register(nameof(Item), typeof(Item),
         typeof(ItemInfoPanel), new PropertyMetadata(null, new PropertyChangedCallback(OnItemChanged)));
 
     private StackPanel InfoStackPanel;

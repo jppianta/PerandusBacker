@@ -1,15 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 
-using PerandusBacker.Stash.Json;
+using PerandusBacker.Stash;
 using PerandusBacker.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -19,7 +11,7 @@ namespace PerandusBacker.Controls
 {
   public sealed class ItemVisualizer : Control
   {
-    private StashItem Item = null;
+    private Item Item = null;
     private LinkPanel linkPanel;
     private SocketPanel socketPanel;
     private ItemInfoPanel infoPanel;
@@ -35,7 +27,7 @@ namespace PerandusBacker.Controls
 
     private void OnItemSelected(object sender, ItemSelectedEventArgs e)
     {
-      Item = e.Item;
+      Item = e.SelectedItem;
       DataContext = Item;
       this.Visibility = Visibility.Visible;
 

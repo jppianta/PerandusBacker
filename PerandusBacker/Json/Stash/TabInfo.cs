@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Media;
 using System.Text.Json.Serialization;
 
-namespace PerandusBacker.Stash.Json
+namespace PerandusBacker.Json
 {
   public class RgbColour
   {

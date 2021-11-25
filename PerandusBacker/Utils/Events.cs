@@ -1,6 +1,6 @@
 ﻿using System;
 
-using PerandusBacker.Stash.Json;
+using PerandusBacker.Stash;
 
 namespace PerandusBacker.Utils
 {
@@ -17,7 +17,7 @@ namespace PerandusBacker.Utils
 
   public class ItemSelectedEventArgs : EventArgs
   {
-    public StashItem Item { get; set; }
+    public Item SelectedItem { get; set; }
   }
 
   public class UpdateTabEventArgs : EventArgs
@@ -40,9 +40,9 @@ namespace PerandusBacker.Utils
     }
 
     public static event EventHandler<ItemSelectedEventArgs> ItemSelectedHandler;
-    public static void ItemSelected(StashItem item)
+    public static void ItemSelected(Item item)
     {
-      ItemSelectedHandler?.Invoke(null, new ItemSelectedEventArgs() { Item = item });
+      ItemSelectedHandler?.Invoke(null, new ItemSelectedEventArgs() { SelectedItem = item });
     }
 
     public static event EventHandler<UpdateTabEventArgs> UpdateTabHandler;

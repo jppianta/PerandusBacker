@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+
+using PerandusBacker.Json;
 
 namespace PerandusBacker.Stash
 {
@@ -27,21 +28,6 @@ namespace PerandusBacker.Stash
     public string Name { get; set; }
 
     public PropertyValue[] Values { get; set; }
-  }
-
-  public class ItemPropertyJson
-  {
-    [JsonPropertyName("values")]
-    public object[][] Values { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-
-    [JsonPropertyName("type")]
-    public int? Type { get; set; }
-
-    [JsonPropertyName("displayMode")]
-    public int DisplayMode { get; set; }
   }
 
   public static class ItemProperties

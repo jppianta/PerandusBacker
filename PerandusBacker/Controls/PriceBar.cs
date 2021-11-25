@@ -1,17 +1,8 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 
 using PerandusBacker.Utils;
-using PerandusBacker.Stash.Json;
+using PerandusBacker.Stash;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,7 +12,7 @@ namespace PerandusBacker.Controls
   public sealed class PriceBar : Control
   {
     private ObservableCollection<string> Currencies = new ObservableCollection<string>(Data.CurrencyList);
-    private StashItem SelectedItem;
+    private Item SelectedItem;
     private ComboBox CurrencyComboBox;
     private NumberBox CurrencyCountBox;
     public PriceBar()
@@ -52,11 +43,11 @@ namespace PerandusBacker.Controls
 
     private void OnItemSelected(object sender, ItemSelectedEventArgs e)
     {
-      SelectedItem = e.Item;
-      if (e.Item.PriceCurrency != null)
+      SelectedItem = e.SelectedItem;
+      if (SelectedItem.PriceCurrency != null)
       {
-        CurrencyComboBox.SelectedItem = e.Item.PriceCurrency;
-        CurrencyCountBox.Value = e.Item.PriceCount;
+        CurrencyComboBox.SelectedItem = SelectedItem.PriceCurrency;
+        CurrencyCountBox.Value = SelectedItem.PriceCount;
       }
       else
       {

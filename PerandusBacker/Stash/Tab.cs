@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.UI.Xaml.Data;
 using System.Collections.ObjectModel;
 
 using PerandusBacker.Utils;
-using PerandusBacker.Stash.Json;
+using PerandusBacker.Json;
 
 namespace PerandusBacker.Stash
 {
   public class Tab
   {
-    public ObservableCollection<StashItem> Items = new ObservableCollection<StashItem>();
+    public ObservableCollection<Item> Items = new ObservableCollection<Item>();
     public TabInfo Info;
     public Tab(TabInfo info)
     {
@@ -26,18 +23,45 @@ namespace PerandusBacker.Stash
       string output = await Network.Request($"character-window/get-stash-items?accountName={Data.Account.Name}&league={Data.League.Id}&tabs=0&tabIndex={Info.Index}");
       StashItem[] items = JsonSerializer.Deserialize<StashInfo>(output).Items;
 
-      foreach (var item in items)
+      foreach (var itemJson in items)
       {
+        Item item = new Item(itemJson);
         item.TabInfo = Info;
 
         Items.Add(item);
       }
     }
 
-    private IOrderedEnumerable<StashItem> SortColumnQuery(string columnName, bool ascending)
+    private IOrderedEnumerable<Item> SortColumnQuery(string columnName, bool ascending)
     {
       switch (columnName)
       {
+        case "Stack":
+          if (ascending)
+          {
+            return from item in Items
+                   orderby item.StackSize ascending
+                   select item;
+          }
+          else
+          {
+            return from item in Items
+                   orderby item.StackSize descending
+                   select item;
+          }
+        case "Corrupted":
+          if (ascending)
+          {
+            return from item in Items
+                   orderby item.Corrupted ascending
+                   select item;
+          }
+          else
+          {
+            return from item in Items
+                   orderby item.Corrupted descending
+                   select item;
+          }
         case "Quality":
           if (ascending)
           {
@@ -82,7 +106,7 @@ namespace PerandusBacker.Stash
 
     public CollectionViewSource GetItemsSorted(string columnName, bool ascending)
     {
-      IOrderedEnumerable<StashItem> query = SortColumnQuery(columnName, ascending);
+      IOrderedEnumerable<Item> query = SortColumnQuery(columnName, ascending);
 
       CollectionViewSource itemsCollection = new CollectionViewSource();
       itemsCollection.Source = query;
@@ -90,7 +114,7 @@ namespace PerandusBacker.Stash
       return itemsCollection;
     }
 
-    public IOrderedEnumerable<StashItem> GetItemsQuery()
+    public IOrderedEnumerable<Item> GetItemsQuery()
     {
       return SortColumnQuery("FullName", true);
     }

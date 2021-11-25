@@ -1,17 +1,8 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using CommunityToolkit.WinUI.UI.Controls;
 
 using PerandusBacker.Stash;
-using PerandusBacker.Stash.Json;
 using PerandusBacker.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -32,7 +23,7 @@ namespace PerandusBacker.Controls
         typeof(ItemsTable), new PropertyMetadata(null, new PropertyChangedCallback(OnItemChanged)));
 
     private DataGrid StashGrid;
-    private StashItem currentSelectedItem;
+    private Item currentSelectedItem;
 
     public ItemsTable()
     {
@@ -89,7 +80,7 @@ namespace PerandusBacker.Controls
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      currentSelectedItem = StashGrid.SelectedItem as StashItem;
+      currentSelectedItem = StashGrid.SelectedItem as Item;
       Events.ItemSelected(currentSelectedItem);
     }
   }

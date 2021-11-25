@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Data;
 using System;
 
 using PerandusBacker.Stash;
-using PerandusBacker.Stash.Json;
+using PerandusBacker.Json;
 
 namespace PerandusBacker.Utils
 {
@@ -23,6 +23,7 @@ namespace PerandusBacker.Utils
 
     #endregion
   }
+
   public class RarityToColor : Converter
   {
     public override object Convert(object value, Type targetType, object parameter, string language)
@@ -70,26 +71,6 @@ namespace PerandusBacker.Utils
       return item * multiplier;
     }
   }
-  public class IsNull : Converter
-  {
-    public override object Convert(object value, Type targetType, object parameter, string language)
-    {
-      return value == null ? Visibility.Collapsed : Visibility.Visible;
-    }
-  }
-
-  public class SocketItemSize : Converter
-  {
-    public override object Convert(object value, Type targetType, object parameter, string language)
-    {
-      // The value parameter is the data from the source object.
-      int item = (int)value;
-      item = item > 3 ? 3 : item;
-      int multiplier = Int32.Parse((string)parameter);
-
-      return item * multiplier;
-    }
-  }
 
   public class SocketColourConverter : Converter
   {
@@ -105,22 +86,6 @@ namespace PerandusBacker.Utils
         case SocketColour.Green: return "#0b6a0b";
         default: return "#faf9f8";
       }
-    }
-  }
-
-  public class SocketDirection : Converter
-  {
-    public override object Convert(object value, Type targetType, object parameter, string language)
-    {
-      // The value parameter is the data from the source object.
-      ItemProperty[] item = (ItemProperty[])value;
-
-      if (item?[0].Name == "Chance to Block")
-      {
-        return "RightToLeft";
-      }
-
-      return "LeftToRight";
     }
   }
 

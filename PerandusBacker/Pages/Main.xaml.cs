@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Controls;
 
+using PerandusBacker.Json;
 using PerandusBacker.Utils;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -17,6 +18,7 @@ namespace PerandusBacker.Pages
     {
       this.InitializeComponent();
       Events.ResizeWindow(1400, 800);
+      UpdateCurrencyPrices();
     }
 
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -24,15 +26,22 @@ namespace PerandusBacker.Pages
       if (!args.IsSettingsSelected)
       {
         var selectedItem = (NavigationViewItem)args.SelectedItem;
-        if (selectedItem != null) {
+        if (selectedItem != null)
+        {
           string selectedItemTag = ((string)selectedItem.Tag);
           string pageName = "PerandusBacker.Pages.Navigation." + selectedItemTag;
           Type pageType = Type.GetType(pageName);
           contentFrame.Navigate(pageType);
         }
-      } else {
+      }
+      else
+      {
         contentFrame.Navigate(typeof(Page));
       }
+    }
+
+    private async void UpdateCurrencyPrices() {
+      CurrencyPriceResponse output = await Network.GetCurrencyPrices("Exalted Orb");
     }
   }
 }

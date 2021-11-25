@@ -3,6 +3,8 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
+using PerandusBacker.Json;
+
 namespace PerandusBacker.Utils
 {
   internal class UserInfo

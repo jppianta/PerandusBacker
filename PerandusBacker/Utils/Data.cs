@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using System.Collections.Generic;
-
-using PerandusBacker.Stash.Json;
+﻿using PerandusBacker.Json;
 
 namespace PerandusBacker.Utils
 {
@@ -11,35 +8,6 @@ namespace PerandusBacker.Utils
     public string Image { get; set; }
   }
 
-  internal class ForumInfo
-  {
-    public string Content { get; set; }
-
-    public string Title { get; set; }
-
-    public string Hash { get; set; }
-
-    public string Submit { get; set; }
-
-    public IEnumerable<KeyValuePair<string, string>> ToArray()
-    {
-      return new[] {
-        new KeyValuePair<string, string>("content", Content),
-        new KeyValuePair<string, string>("title", Title),
-        new KeyValuePair<string, string>("hash", Hash),
-        new KeyValuePair<string, string>("submit", Submit),
-      };
-    }
-  }
-
-  internal class LeagueInfo
-  {
-    [JsonPropertyName("id")]
-    public string Id { get; set; }
-
-    [JsonPropertyName("realm")]
-    public string Realm { get; set; }
-  }
   static class Data
   {
     public static AccountInfo Account = new AccountInfo();
@@ -68,8 +36,8 @@ namespace PerandusBacker.Utils
     {
       switch (name)
       {
-        case("Chromatic Orb"): return "chrom";
-        case("Orb of Alteration"): return "alt";
+        case ("Chromatic Orb"): return "chrom";
+        case ("Orb of Alteration"): return "alt";
         case ("Jeweller's Orb"): return "jewel";
         case ("Orb of Chance"): return "chance";
         case ("Cartographer's Chisel"): return "chisel";
@@ -87,6 +55,21 @@ namespace PerandusBacker.Utils
         case ("Silver Coin"): return "silver";
         default: return "chaos";
       }
+    }
+
+    public static CurrencyPriceRequest CreateCurrencyPriceRequestObject(string currency)
+    {
+      return new CurrencyPriceRequest()
+      {
+        Exchange = new CurrencyPriceOptions()
+        {
+          Have = new[] { CurrencyMap(currency) },
+          Want = new[] { CurrencyMap("Chaos Orb") },
+          Status = new CurrencyPriceStatusOptions() {
+            Option = "online"
+          }
+        }
+      };
     }
   }
 }

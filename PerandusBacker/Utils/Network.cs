@@ -6,7 +6,8 @@ using System.Text.Json;
 using System.Text;
 using HtmlAgilityPack;
 using System.Linq;
-using System.Collections.Generic;
+
+using PerandusBacker.Json;
 
 namespace PerandusBacker.Utils
 {
@@ -29,6 +30,7 @@ namespace PerandusBacker.Utils
     {
       EnsureHandler();
       _httpClient = new HttpClient(_httpClientHandler);
+      _httpClient.DefaultRequestHeaders.Add("User-Agent", "Other");
     }
 
     private static void EnsureHandler()
@@ -63,16 +65,31 @@ namespace PerandusBacker.Utils
       return await response.Content.ReadAsStringAsync();
     }
 
-    public static async Task<string> RequestPost(string url, ForumInfo data)
+    public static async Task<string> RequestPostFormUrl(string url, PostData data)
     {
-      return await RequestPost(PoeUri, url, data);
+      return await RequestPostFormUrl(PoeUri, url, data);
     }
 
-    private static async Task<string> RequestPost(Uri uri, string url, ForumInfo data)
+    private static async Task<string> RequestPostFormUrl(Uri uri, string url, PostData data)
     {
       EnsureClient();
 
-      var content = new FormUrlEncodedContent(data.ToArray());
+      FormUrlEncodedContent content = new FormUrlEncodedContent(data.ToArray());
+
+      HttpResponseMessage response = await _httpClient.PostAsync(uri + url, content);
+      response.EnsureSuccessStatusCode();
+
+      return await response.Content.ReadAsStringAsync();
+    }
+
+    public static async Task<string> RequestPostJson(string url, object data)
+    {
+      return await RequestPostJson(PoeUri, url, data);
+    }
+
+    private static async Task<string> RequestPostJson(Uri uri, string url, object data)
+    {
+      StringContent content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
 
       HttpResponseMessage response = await _httpClient.PostAsync(uri + url, content);
       response.EnsureSuccessStatusCode();
@@ -131,7 +148,19 @@ namespace PerandusBacker.Utils
       ForumInfo info = await GetForumInfo(threadId);
       info.Content = content;
 
-      return await RequestPost($"forum/edit-thread/{threadId}", info);
+      return await RequestPostFormUrl($"forum/edit-thread/{threadId}", info);
+    }
+
+    public static async Task<CurrencyPriceResponse> GetCurrencyPrices(string currency)
+    {
+      CurrencyPriceRequest content = Data.CreateCurrencyPriceRequestObject(currency);
+
+      string reqOutput = await RequestPostJson($"api/trade/exchange/{Data.League.Id}", content);
+      CurrencyPriceQueryResponse response = JsonSerializer.Deserialize<CurrencyPriceQueryResponse>(reqOutput);
+
+      string req = $"api/trade/fetch/{string.Join(',', response.Result.Take(20))}?query={response.Id}&exchange";
+      string output = await Request(req);
+      return JsonSerializer.Deserialize<CurrencyPriceResponse>(output);
     }
 
     private static async Task<ForumInfo> GetForumInfo(string threadId)
@@ -150,11 +179,6 @@ namespace PerandusBacker.Utils
         .Where(node => node.GetAttributeValue("name", "") == "hash")
         .First()
         .GetAttributeValue("value", "");
-
-      //string title = inputNodes
-      //  .Where(node => node.GetAttributeValue("name", "") == "title")
-      //  .First()
-      //  .GetAttributeValue("value", "");
 
       info.Hash = hash;
       info.Title = "TestShop";

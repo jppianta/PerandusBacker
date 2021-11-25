@@ -16,8 +16,6 @@
     x:Key="ImageItemSizeConverter" />
   <helper:PropertyTypeToColor
     x:Key="PropertyTypeToColor" />
-  <helper:HasProperty
-    x:Key="HasProperty" />
   <helper:RarityToColor
     x:Key="RarityToColorConverter" />
 
@@ -127,7 +125,7 @@
         <ControlTemplate
           TargetType="local:ItemVisualizer">
           <Grid
-            MaxWidth="450"
+            Width="350"
             Padding="12,7">
             <Grid.RowDefinitions>
               <RowDefinition
@@ -303,6 +301,17 @@
                 Header="Price"
                 Tag="Price"
                 Binding="{Binding FullPrice}" />
+              <toolkit:DataGridTextColumn
+                Header="Stack"
+                Tag="Stack"
+                Binding="{Binding StackText}"
+              />
+              <toolkit:DataGridTextColumn
+                Header="Corrupted"
+                Tag="Corrupted"
+                Foreground="#a4262c"
+                FontWeight="Bold"
+                Binding="{Binding CorruptedText}" />
               <toolkit:DataGridTextColumn
                 Header="Quality"
                 Tag="Quality"

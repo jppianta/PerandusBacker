@@ -2,55 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
 
 using PerandusBacker.Utils;
-using PerandusBacker.Stash;
+using PerandusBacker.Json;
 
-namespace PerandusBacker.Stash.Json
+namespace PerandusBacker.Stash
 {
-  public enum SocketColour
-  {
-    Red,
-    Green,
-    Blue,
-    White
-  }
-
-  public enum ItemFrame
-  {
-    Normal,
-    Magic,
-    Rare,
-    Unique,
-    Gem
-  }
-
-  public class ItemSocket
-  {
-    private SocketColour ToColour(string s)
-    {
-      switch (s)
-      {
-        case "R": return SocketColour.Red;
-        case "G": return SocketColour.Green;
-        case "B": return SocketColour.Blue;
-        default: return SocketColour.White;
-      }
-    }
-
-    [JsonPropertyName("group")]
-    public int Group { get; set; }
-
-    public SocketColour Colour { get; set; }
-
-    public int SocketIndex { get; set; }
-
-    [JsonPropertyName("sColour")]
-    public string sColour { get => ""; set => Colour = ToColour(value); }
-  }
-
-  public class StashItem : INotifyPropertyChanged
+  public class Item : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -62,7 +20,7 @@ namespace PerandusBacker.Stash.Json
       }
     }
 
-    public TabInfo TabInfo { get; set; }
+    public TabInfo TabInfo;
 
     private int _priceCount = 0;
     public int PriceCount
@@ -88,66 +46,78 @@ namespace PerandusBacker.Stash.Json
 
     public string FullPrice { get => PriceCount > 0 && PriceCurrency != null ? $"{PriceCount} {Data.CurrencyMap(PriceCurrency)}" : ""; }
 
-    public Dictionary<string, ItemProperty> PropertyDictionary = new Dictionary<string, ItemProperty>();
-
-    [JsonPropertyName("w")]
     public int Width { get; set; }
 
-    [JsonPropertyName("h")]
     public int Height { get; set; }
 
-    [JsonPropertyName("icon")]
     public string Icon { get; set; }
 
-    [JsonPropertyName("id")]
     public string Id { get; set; }
 
-    [JsonPropertyName("name")]
     public string Name { get; set; }
 
-    [JsonPropertyName("corrupted")]
     public bool Corrupted { get; set; }
 
     public string FullName { get => Name == "" ? TypeLine : $"{Name} {TypeLine}"; }
 
-    [JsonPropertyName("typeLine")]
     public string TypeLine { get; set; }
 
-    [JsonPropertyName("baseType")]
     public string BaseType { get; set; }
 
-    [JsonPropertyName("identified")]
     public bool Identified { get; set; }
 
-    [JsonPropertyName("ilvl")]
     public int ItemLevel { get; set; }
 
-    [JsonPropertyName("x")]
     public int X { get; set; }
 
-    [JsonPropertyName("y")]
     public int Y { get; set; }
 
-    [JsonPropertyName("frameType")]
     public ItemFrame FrameType { get; set; }
 
-    [JsonPropertyName("sockets")]
     public ItemSocket[] Sockets { get; set; }
 
-    [JsonPropertyName("stackSize")]
     public int StackSize { get; set; }
 
-    [JsonPropertyName("maxStackSize")]
     public int MaxStackSize { get; set; }
 
-    [JsonPropertyName("properties")]
-    public ItemPropertyJson[] _Properties
+    public Dictionary<string, int> ValueablePropertyIndexes = new Dictionary<string, int>();
+
+    public ItemProperty[] Properties { get; set; }
+
+    public ItemProperty[] AdditionalProperties { get; set; }
+
+    public ItemProperty[] Requirements { get; set; }
+
+    public string[] ImplicitMods { get; set; }
+
+    public string[] ExplicitMods { get; set; }
+
+    public Item(StashItem item)
     {
-      get => null;
-      set
-      {
-        (ValueablePropertyIndexes, Properties) = ItemProperties.ParseItemProperties(value);
-      }
+      Width = item.Width;
+      Height = item.Height;
+      Icon = item.Icon;
+      Id = item.Id;
+      Name = item.Name;
+      Corrupted = item.Corrupted;
+      TypeLine = item.TypeLine;
+      BaseType = item.BaseType;
+      Identified = item.Identified;
+      ItemLevel = item.ItemLevel;
+      X = item.X;
+      Y = item.Y;
+      FrameType = item.FrameType;
+      Sockets = item.Sockets;
+      StackSize = item.StackSize;
+      MaxStackSize = item.MaxStackSize;
+      ImplicitMods = item.ImplicitMods;
+      ExplicitMods = item.ExplicitMods;
+      if (item.Properties != null)
+        (ValueablePropertyIndexes, Properties) = ItemProperties.ParseItemProperties(item.Properties);
+      if (item.AdditionalProperties != null)
+        (_, AdditionalProperties) = ItemProperties.ParseItemProperties(item.AdditionalProperties);
+      if (item.Requirements != null)
+        (_, Requirements) = ItemProperties.ParseItemProperties(item.Requirements);
     }
 
     private T RetrieveProperty<T>(string propertyName, Func<string, T> parser, T defaultValue)
@@ -201,39 +171,10 @@ namespace PerandusBacker.Stash.Json
 
     public string PhysicalDamageText { get => RetrieveProperty("Physical Damage"); }
 
-    public Dictionary<string, int> ValueablePropertyIndexes = new Dictionary<string, int>();
-    public ItemProperty[] Properties { get; set; }
+    public string StackText { get => StackSize > 0 ? StackSize.ToString() : ""; }
+
+    public string CorruptedText { get => Corrupted ? "C" : ""; }
 
     public bool IsShield { get => ValueablePropertyIndexes.ContainsKey("Chance to Block"); }
-
-    [JsonPropertyName("additionalProperties")]
-    public ItemPropertyJson[] _AdditionalProperties
-    {
-      get => null;
-      set
-      {
-        (_, AdditionalProperties) = ItemProperties.ParseItemProperties(value);
-      }
-    }
-
-    public ItemProperty[] AdditionalProperties { get; set; }
-
-    [JsonPropertyName("requirements")]
-    public ItemPropertyJson[] _Requirements
-    {
-      get => null;
-      set
-      {
-        (_, Requirements) = ItemProperties.ParseItemProperties(value);
-      }
-    }
-
-    public ItemProperty[] Requirements { get; set; }
-
-    [JsonPropertyName("implicitMods")]
-    public string[] ImplicitMods { get; set; }
-
-    [JsonPropertyName("explicitMods")]
-    public string[] ExplicitMods { get; set; }
   }
 }

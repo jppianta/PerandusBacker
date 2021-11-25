@@ -1,12 +1,11 @@
 ﻿using Microsoft.UI.Xaml.Data;
-using PerandusBacker.Stash.Json;
-using PerandusBacker.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using PerandusBacker.Json;
+using PerandusBacker.Utils;
 
 namespace PerandusBacker.Stash
 {
@@ -31,7 +30,7 @@ namespace PerandusBacker.Stash
 
     public static CollectionViewSource GetGroups()
     {
-      List<StashItem> items = new List<StashItem>();
+      List<Item> items = new List<Item>();
       foreach (Tab tab in Tabs)
       {
         items.AddRange(tab.Items);

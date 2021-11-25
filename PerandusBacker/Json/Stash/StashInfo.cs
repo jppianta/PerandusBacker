@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PerandusBacker.Stash.Json
+namespace PerandusBacker.Json
 {
   public class StashInfo
   {
