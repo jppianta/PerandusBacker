@@ -52,6 +52,7 @@ namespace PerandusBacker.Utils
     public static void UpdatePoeSessionId(string PoeSessionId)
     {
       EnsureHandler();
+      Data.PoeSessionId = PoeSessionId;
       _httpClientHandler.CookieContainer.Add(new Cookie("POESESSID", PoeSessionId) { Domain = PoeUri.Host });
     }
 
@@ -151,7 +152,7 @@ namespace PerandusBacker.Utils
       return await RequestPostFormUrl($"forum/edit-thread/{threadId}", info);
     }
 
-    public static async Task<CurrencyPriceResponse> GetCurrencyPrices(string currency)
+    public static async Task<CurrencyPriceResponse> GetCurrencyPrices(Currency currency)
     {
       CurrencyPriceRequest content = Data.CreateCurrencyPriceRequestObject(currency);
 

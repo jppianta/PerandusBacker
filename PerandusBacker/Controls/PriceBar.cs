@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 using PerandusBacker.Utils;
 using PerandusBacker.Stash;
@@ -11,7 +12,7 @@ namespace PerandusBacker.Controls
 {
   public sealed class PriceBar : Control
   {
-    private ObservableCollection<string> Currencies = new ObservableCollection<string>(Data.CurrencyList);
+    private ObservableCollection<string> Currencies = new ObservableCollection<string>(Data.CurrencyMap.Select(pair => pair.Value.Name));
     private Item SelectedItem;
     private ComboBox CurrencyComboBox;
     private NumberBox CurrencyCountBox;

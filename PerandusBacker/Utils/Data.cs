@@ -1,4 +1,6 @@
-﻿using PerandusBacker.Json;
+﻿using System.Collections.Generic;
+
+using PerandusBacker.Json;
 
 namespace PerandusBacker.Utils
 {
@@ -8,64 +10,52 @@ namespace PerandusBacker.Utils
     public string Image { get; set; }
   }
 
+  internal class Currency
+  {
+    public string Name { get; set; }
+    public string ShortName { get; set; }
+
+    public double ChaosPrice { get; set; }
+  }
+
   static class Data
   {
+    public static string ThreadId { get; set; }
+    public static string PoeSessionId { get; set; }
     public static AccountInfo Account = new AccountInfo();
     public static LeagueInfo League = new LeagueInfo();
-    public static string[] CurrencyList = new string[] {
-      "Perandus Coin",
-      "Chaos Orb",
-      "Orb of Alchemy",
-      "Chromatic Orb",
-      "Exalted Orb",
-      "Orb of Alteration",
-      "Jeweller's Orb",
-      "Orb of Chance",
-      "Cartographer's Chisel",
-      "Orb of Fusing",
-      "Orb of Scouring",
-      "Blessed Orb",
-      "Orb of Regret",
-      "Regal Orb",
-      "Gemcutter's Prism",
-      "Divine Orb",
-      "Mirror of Kalandra",
-      "Silver Coin",
-    };
-    public static string CurrencyMap(string name)
-    {
-      switch (name)
-      {
-        case ("Chromatic Orb"): return "chrom";
-        case ("Orb of Alteration"): return "alt";
-        case ("Jeweller's Orb"): return "jewel";
-        case ("Orb of Chance"): return "chance";
-        case ("Cartographer's Chisel"): return "chisel";
-        case ("Orb of Fusing"): return "fuse";
-        case ("Orb of Alchemy"): return "alch";
-        case ("Orb of Scouring"): return "scour";
-        case ("Blessed Orb"): return "blessed";
-        case ("Orb of Regret"): return "regret";
-        case ("Regal Orb"): return "regal";
-        case ("Gemcutter's Prism"): return "gemcutter";
-        case ("Divine Orb"): return "divine";
-        case ("Exalted Orb"): return "exalted";
-        case ("Mirror of Kalandra"): return "mirror";
-        case ("Perandus Coin"): return "perandus";
-        case ("Silver Coin"): return "silver";
-        default: return "chaos";
-      }
-    }
 
-    public static CurrencyPriceRequest CreateCurrencyPriceRequestObject(string currency)
+    public static Dictionary<string, Currency> CurrencyMap = new Dictionary<string, Currency>(new[] {
+      new KeyValuePair<string, Currency>("Perandus Coin", new Currency() { Name = "Perandus Coin", ShortName = "perandus" }),
+      new KeyValuePair<string, Currency>("Chaos Orb", new Currency() { Name = "Chaos Orb", ShortName = "chaos", ChaosPrice = 1 }),
+      new KeyValuePair<string, Currency>("Orb of Alchemy", new Currency() { Name = "Orb of Alchemy", ShortName = "alch" }),
+      new KeyValuePair<string, Currency>("Chromatic Orb", new Currency() { Name = "Chromatic Orb", ShortName = "chrom" }),
+      new KeyValuePair<string, Currency>("Exalted Orb", new Currency() { Name = "Exalted Orb", ShortName = "exalted" }),
+      new KeyValuePair<string, Currency>("Orb of Alteration", new Currency() { Name = "Orb of Alteration", ShortName = "alt" }),
+      new KeyValuePair<string, Currency>("Jeweller's Orb", new Currency() { Name = "Jeweller's Orb", ShortName = "jewellers" }),
+      new KeyValuePair<string, Currency>("Orb of Chance", new Currency() { Name = "Orb of Chance", ShortName = "chance" }),
+      new KeyValuePair<string, Currency>("Cartographer's Chisel", new Currency() { Name = "Cartographer's Chisel", ShortName = "chisel" }),
+      new KeyValuePair<string, Currency>("Orb of Fusing", new Currency() { Name = "Orb of Fusing", ShortName = "fuse" }),
+      new KeyValuePair<string, Currency>("Orb of Scouring", new Currency() { Name = "Orb of Scouring", ShortName = "scour" }),
+      new KeyValuePair<string, Currency>("Blessed Orb", new Currency() { Name = "Blessed Orb", ShortName = "blessed" }),
+      new KeyValuePair<string, Currency>("Orb of Regret", new Currency() { Name = "Orb of Regret", ShortName = "regret" }),
+      new KeyValuePair<string, Currency>("Regal Orb", new Currency() { Name = "Regal Orb", ShortName = "regal" }),
+      new KeyValuePair<string, Currency>("Gemcutter's Prism", new Currency() { Name = "Gemcutter's Prism", ShortName = "gemcutter" }),
+      new KeyValuePair<string, Currency>("Divine Orb", new Currency() { Name = "Divine Orb", ShortName = "divine" }),
+      new KeyValuePair<string, Currency>("Mirror of Kalandra", new Currency() { Name = "Mirror of Kalandra", ShortName = "mirror" }),
+      new KeyValuePair<string, Currency>("Silver Coin", new Currency() { Name = "Silver Coin", ShortName = "silver" }),
+    });
+
+    public static CurrencyPriceRequest CreateCurrencyPriceRequestObject(Currency currency)
     {
       return new CurrencyPriceRequest()
       {
         Exchange = new CurrencyPriceOptions()
         {
-          Have = new[] { CurrencyMap(currency) },
-          Want = new[] { CurrencyMap("Chaos Orb") },
-          Status = new CurrencyPriceStatusOptions() {
+          Have = new[] { currency.ShortName },
+          Want = new[] { CurrencyMap["Chaos Orb"].ShortName },
+          Status = new CurrencyPriceStatusOptions()
+          {
             Option = "online"
           }
         }

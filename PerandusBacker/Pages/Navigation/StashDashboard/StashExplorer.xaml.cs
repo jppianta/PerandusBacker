@@ -25,7 +25,7 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
       {
         LoadingControl.IsLoading = true;
 
-        await StashManager.LoadStashes();
+        await StashManager.LoadStashes(true);
 
         LoadingControl.IsLoading = false;
       }

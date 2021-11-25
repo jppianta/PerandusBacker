@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Collections.Generic;
 
+using PerandusBacker.Stash;
 using PerandusBacker.Json;
 
 namespace PerandusBacker.Utils
@@ -13,6 +17,7 @@ namespace PerandusBacker.Utils
     public int EntropySize;
     public byte[] SafePoeSessionId;
     public byte[] Entropy;
+    public string ThreadId;
     public string League;
     public string Realm;
   }
@@ -29,6 +34,25 @@ namespace PerandusBacker.Utils
       }
     }
 
+    public static void SaveUserInfo()
+    {
+      byte[] PoeSessionIdBytes = Encoding.UTF8.GetBytes(Data.PoeSessionId);
+      byte[] Entropy = CreateEntropy();
+
+      byte[] SafePoeSession = ProtectedData.Protect(PoeSessionIdBytes, Entropy, DataProtectionScope.CurrentUser);
+
+      SaveUserInfo(new UserInfo()
+      {
+        SafePoeSessionId = SafePoeSession,
+        SessionSize = SafePoeSession.Length,
+        Entropy = Entropy,
+        EntropySize = Entropy.Length,
+        ThreadId = Data.ThreadId,
+        League = Data.League.Id,
+        Realm = Data.League.Realm
+      });
+    }
+
     public static void SaveUserInfo(string PoeSessionId, LeagueInfo League)
     {
       byte[] PoeSessionIdBytes = Encoding.UTF8.GetBytes(PoeSessionId);
@@ -42,6 +66,7 @@ namespace PerandusBacker.Utils
         SessionSize = SafePoeSession.Length,
         Entropy = Entropy,
         EntropySize = Entropy.Length,
+        ThreadId = Data.ThreadId,
         League = League.Id,
         Realm = League.Realm
       });
@@ -84,6 +109,37 @@ namespace PerandusBacker.Utils
       {
         return false;
       }
+    }
+
+    public static void SaveItemsPrice()
+    {
+      if (StashManager.Tabs != null)
+      {
+        // The internet says that processes that are reading and writing an array from different locations are thread safe, so we should be fine
+        SaveItemsPrice(StashManager.Tabs);
+      }
+    }
+
+    private static async void SaveItemsPrice(Tab[] tabs)
+    {
+
+      Dictionary<string, ItemPriceInfo> itemsPrice = new Dictionary<string, ItemPriceInfo>();
+      foreach (Tab tab in tabs)
+      {
+        foreach (Item item in tab.Items.Where(item => item.PriceCount > 0))
+        {
+          itemsPrice.Add(item.Id, new ItemPriceInfo() { Amount = item.PriceCount, Currency = item.PriceCurrency });
+        }
+      }
+
+      await File.WriteAllTextAsync(DocumentsFolder + "prices.json", JsonSerializer.Serialize(itemsPrice));
+    }
+
+    public static Dictionary<string, ItemPriceInfo> LoadItemsPrice()
+    {
+      string itemsPrice = File.ReadAllText(DocumentsFolder + "prices.json");
+
+      return JsonSerializer.Deserialize<Dictionary<string, ItemPriceInfo>>(itemsPrice);
     }
   }
 }

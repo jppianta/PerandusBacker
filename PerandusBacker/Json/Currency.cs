@@ -2,13 +2,13 @@
 
 namespace PerandusBacker.Json
 {
-  internal class ItemPriceInfo
+  public class ItemPriceInfo
   {
     [JsonPropertyName("currency")]
     public string Currency { get; set; }
 
     [JsonPropertyName("amount")]
-    public int Amount { get; set; }
+    public double Amount { get; set; }
   }
 
   internal class ItemPrice

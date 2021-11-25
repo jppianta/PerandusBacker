@@ -18,7 +18,6 @@ namespace PerandusBacker.Pages
     {
       this.InitializeComponent();
       Events.ResizeWindow(1400, 800);
-      UpdateCurrencyPrices();
     }
 
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -40,8 +39,9 @@ namespace PerandusBacker.Pages
       }
     }
 
-    private async void UpdateCurrencyPrices() {
-      CurrencyPriceResponse output = await Network.GetCurrencyPrices("Exalted Orb");
+    private async void OnLoading(Microsoft.UI.Xaml.FrameworkElement sender, object args)
+    {
+      await BackgroundManager.StartBackgroundJob();
     }
   }
 }

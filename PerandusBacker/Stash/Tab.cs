@@ -1,15 +1,16 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Text.Json;
-using Microsoft.UI.Xaml.Data;
 using System.Collections.ObjectModel;
+using Microsoft.UI.Xaml.Data;
 
 using PerandusBacker.Utils;
 using PerandusBacker.Json;
 
 namespace PerandusBacker.Stash
 {
-  public class Tab
+  public sealed class Tab
   {
     public ObservableCollection<Item> Items = new ObservableCollection<Item>();
     public TabInfo Info;
@@ -18,7 +19,7 @@ namespace PerandusBacker.Stash
       Info = info;
     }
 
-    public async Task LoadItems()
+    public async Task LoadItems(Dictionary<string, ItemPriceInfo> itemsPrice = null)
     {
       string output = await Network.Request($"character-window/get-stash-items?accountName={Data.Account.Name}&league={Data.League.Id}&tabs=0&tabIndex={Info.Index}");
       StashItem[] items = JsonSerializer.Deserialize<StashInfo>(output).Items;
@@ -27,6 +28,12 @@ namespace PerandusBacker.Stash
       {
         Item item = new Item(itemJson);
         item.TabInfo = Info;
+
+        if (itemsPrice != null && itemsPrice.ContainsKey(item.Id))
+        {
+          item.PriceCount = itemsPrice[item.Id].Amount;
+          item.PriceCurrency = itemsPrice[item.Id].Currency;
+        }
 
         Items.Add(item);
       }

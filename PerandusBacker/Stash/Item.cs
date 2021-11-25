@@ -22,8 +22,8 @@ namespace PerandusBacker.Stash
 
     public TabInfo TabInfo;
 
-    private int _priceCount = 0;
-    public int PriceCount
+    private double _priceCount = 0;
+    public double PriceCount
     {
       get => _priceCount;
       set
@@ -44,7 +44,7 @@ namespace PerandusBacker.Stash
       }
     }
 
-    public string FullPrice { get => PriceCount > 0 && PriceCurrency != null ? $"{PriceCount} {Data.CurrencyMap(PriceCurrency)}" : ""; }
+    public string FullPrice { get => PriceCount > 0 && PriceCurrency != null ? $"{PriceCount} {Data.CurrencyMap[PriceCurrency].ShortName}" : ""; }
 
     public int Width { get; set; }
 
