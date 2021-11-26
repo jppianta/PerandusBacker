@@ -136,7 +136,7 @@ namespace PerandusBacker.Utils
 
       foreach (Tab tab in tabs)
       {
-        foreach (Item item in tab.Items.Where(item => item.PriceCount > 0))
+        foreach (Item item in tab.Items.Where(item => item.PriceCurrency != null))
         {
           prices.Items.Add(item.Id, new ItemPriceInfo() { Amount = item.PriceCount, Currency = item.PriceCurrency });
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Text;
 using HtmlAgilityPack;
 using System.Linq;
 
+using PerandusBacker.Stash;
 using PerandusBacker.Json;
 
 namespace PerandusBacker.Utils
@@ -144,12 +146,38 @@ namespace PerandusBacker.Utils
       }
     }
 
-    public static async Task<string> PostItems(string content, string threadId)
+    public static async Task<bool> PostItems()
     {
-      ForumInfo info = await GetForumInfo(threadId);
-      info.Content = content;
+      if (Data.ThreadId == "" || StashManager.Tabs == null)
+      {
+        return false;
+      }
 
-      return await RequestPostFormUrl($"forum/edit-thread/{threadId}", info);
+      string content = "";
+
+      var priceGroups = StashManager.Tabs
+                  .SelectMany(tab => tab.Items)
+                  .Where(item => item.PriceCount > 0)
+                  .GroupBy(item => item.FullPrice);
+
+      foreach (var priceGroup in priceGroups)
+      {
+        content += $"[spoiler=\"~b/o {priceGroup.Key}\"]{string.Join('\n', priceGroup.Select(item => item.PriceCode))}[/spoiler]";
+      }
+
+      
+      ForumInfo info = await GetForumInfo(Data.ThreadId);
+      info.Content = String.Join('\n', content);
+
+      try
+      {
+        await RequestPostFormUrl($"forum/edit-thread/{Data.ThreadId}", info);
+        return true;
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     public static async Task<CurrencyPriceResponse> GetCurrencyPrices(Currency currency)
@@ -181,8 +209,13 @@ namespace PerandusBacker.Utils
         .First()
         .GetAttributeValue("value", "");
 
+      string title = inputNodes
+        .Where(node => node.GetAttributeValue("name", "") == "title")
+        .First()
+        .GetAttributeValue("value", "");
+
       info.Hash = hash;
-      info.Title = "TestShop";
+      info.Title = HttpUtility.HtmlDecode(title);
 
       return info;
     }

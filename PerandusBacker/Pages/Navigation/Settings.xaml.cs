@@ -1,18 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
 using System.Threading;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 
 using PerandusBacker.Utils;
 
@@ -52,12 +40,13 @@ namespace PerandusBacker.Pages.Navigation
 
       Data.ThreadId = threadIdBox.Text;
 
-      // Implement a debounce of 2 seconds so that we don't write the info to the disk at every key press
+      // Debounce of 2 seconds so that we don't write the info to the disk at every key press
       if (timer == null) {
         timer = new Timer((object _) =>
         {
           Storage.SaveUserInfo();
           timer.Dispose();
+          timer = null;
         }, null, 2000, 0);
       } else 
       {

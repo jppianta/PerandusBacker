@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 using PerandusBacker.Utils;
 using PerandusBacker.Stash;
@@ -16,6 +17,9 @@ namespace PerandusBacker.Controls
     private Item SelectedItem;
     private ComboBox CurrencyComboBox;
     private NumberBox CurrencyCountBox;
+
+    private Timer timer;
+
     public PriceBar()
     {
       this.DefaultStyleKey = typeof(PriceBar);
@@ -62,6 +66,31 @@ namespace PerandusBacker.Controls
       if (SelectedItem != null)
       {
         SelectedItem.PriceCount = (int)CurrencyCountBox.Value;
+        UpdatePricesOnForum();
+      }
+    }
+
+    private async void UpdatePricesOnForum(bool force = false)
+    {
+      if (force) {
+        await Network.PostItems();
+        return;
+      }  
+
+      // Debounce of 1 minute so that we don't update the prices on the forum more often then needed
+      if (timer == null)
+      {
+        timer = new Timer(async (object _) =>
+        {
+          if (await Network.PostItems()) {
+            timer.Dispose();
+            timer = null;
+          }
+        }, null, 60000, 0);
+      }
+      else
+      {
+        timer.Change(60000, 0);
       }
     }
   }

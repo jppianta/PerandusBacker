@@ -29,7 +29,7 @@ namespace PerandusBacker.Stash
         Item item = new Item(itemJson);
         item.TabInfo = Info;
 
-        if (itemsPrice != null && itemsPrice.ContainsKey(item.Id))
+        if (itemsPrice != null && itemsPrice.ContainsKey(item.Id) && itemsPrice[item.Id].Amount > 0)
         {
           item.PriceCount = itemsPrice[item.Id].Amount;
           item.PriceCurrency = itemsPrice[item.Id].Currency;

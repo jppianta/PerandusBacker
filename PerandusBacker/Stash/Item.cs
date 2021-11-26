@@ -94,7 +94,7 @@ namespace PerandusBacker.Stash
 
     public string[] ExplicitMods { get; set; }
 
-    public string PriceCode { get => $"[linkItem location=\"{InventoryId}\" league=\"{Data.League.Id}\" x=\"{X}\"  y=\"{Y}\"]~b/o {FullPrice}"; }
+    public string PriceCode { get => $"[linkItem location=\"{InventoryId}\" league=\"{Data.League.Id}\" x=\"{X}\"  y=\"{Y}\"]"; }
 
     public Item(StashItem item)
     {
