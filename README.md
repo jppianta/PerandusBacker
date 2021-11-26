@@ -1,4 +1,4 @@
-# PerandusBacker
+# Perandus Backer
 Modern Path of Exile stash manager
 
 <pre>
