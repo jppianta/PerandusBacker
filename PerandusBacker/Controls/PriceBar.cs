@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
+using System;
 
 using PerandusBacker.Utils;
 using PerandusBacker.Stash;
@@ -18,7 +18,7 @@ namespace PerandusBacker.Controls
     private ComboBox CurrencyComboBox;
     private NumberBox CurrencyCountBox;
 
-    private Timer timer;
+    private Action updateDebounce = Data.Debounce(async (object _) => await Network.PostItems(), TimeSpan.FromMinutes(1));
 
     public PriceBar()
     {
@@ -75,23 +75,10 @@ namespace PerandusBacker.Controls
       if (force) {
         await Network.PostItems();
         return;
-      }  
+      }
 
       // Debounce of 1 minute so that we don't update the prices on the forum more often then needed
-      if (timer == null)
-      {
-        timer = new Timer(async (object _) =>
-        {
-          if (await Network.PostItems()) {
-            timer.Dispose();
-            timer = null;
-          }
-        }, null, 60000, 0);
-      }
-      else
-      {
-        timer.Change(60000, 0);
-      }
+      updateDebounce();
     }
   }
 }

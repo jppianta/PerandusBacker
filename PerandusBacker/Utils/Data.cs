@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using PerandusBacker.Json;
 
@@ -66,6 +67,23 @@ namespace PerandusBacker.Utils
           {
             Option = "online"
           }
+        }
+      };
+    }
+
+    public static Action Debounce(TimerCallback callback, TimeSpan period)
+    {
+      Timer timer = null;
+
+      return () =>
+      {
+        if (timer == null)
+        {
+          timer = new Timer(callback, null, (int)period.TotalMilliseconds, 0);
+        }
+        else
+        {
+          timer.Change((int)period.TotalMilliseconds, 0);
         }
       };
     }

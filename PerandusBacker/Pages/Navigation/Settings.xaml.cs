@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Threading;
+using System;
 
 using PerandusBacker.Utils;
 
@@ -19,7 +20,7 @@ namespace PerandusBacker.Pages.Navigation
     private string AccountName = Data.Account.Name;
     private string AccountImage = Data.Account.Image;
 
-    private Timer timer;
+    private Action updateDebounce = Data.Debounce((object _) => Storage.SaveUserInfo(), TimeSpan.FromSeconds(2));
     public Settings()
     {
       this.InitializeComponent();
@@ -41,17 +42,7 @@ namespace PerandusBacker.Pages.Navigation
       Data.ThreadId = threadIdBox.Text;
 
       // Debounce of 2 seconds so that we don't write the info to the disk at every key press
-      if (timer == null) {
-        timer = new Timer((object _) =>
-        {
-          Storage.SaveUserInfo();
-          timer.Dispose();
-          timer = null;
-        }, null, 2000, 0);
-      } else 
-      {
-        timer.Change(2000, 0);
-      }
+      updateDebounce();
     }
 
     private void OnThemeCheck(object sender, SelectionChangedEventArgs e)
