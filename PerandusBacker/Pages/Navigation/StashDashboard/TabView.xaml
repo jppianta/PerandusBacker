@@ -11,12 +11,23 @@
   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
   <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition
-        Height="*" />
-    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition
+        Width="*" />
+      <ColumnDefinition
+        Width="Auto" />
+    </Grid.ColumnDefinitions>
     <controls:ItemsTable
       Grid.Column="0"
+      x:Name="Table"
       StashTab="{x:Bind StashTab}" />
+    <toolkit:Expander
+      Grid.Column="1"
+      Background="Transparent"
+      Header="Item"
+      IsExpanded="True"
+      ExpandDirection="Left">
+      <controls:ItemVisualizer />
+    </toolkit:Expander>
   </Grid>
 </Page>

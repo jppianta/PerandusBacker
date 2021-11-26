@@ -42,6 +42,17 @@ namespace PerandusBacker.Utils
     }
   }
 
+  public class IsTabEmptyVisibility : Converter
+  {
+    public override object Convert(object value, Type targetType, object parameter, string language)
+    {
+      // The value parameter is the data from the source object.
+      bool IsTabEmpty = (bool)value;
+
+      return IsTabEmpty ? Visibility.Collapsed : Visibility.Visible;
+    }
+  }
+
   public class PropertyTypeToColor : Converter
   {
     public override object Convert(object value, Type targetType, object parameter, string language)

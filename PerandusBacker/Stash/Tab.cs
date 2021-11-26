@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
 using Microsoft.UI.Xaml.Data;
 
@@ -14,6 +16,26 @@ namespace PerandusBacker.Stash
   {
     public ObservableCollection<Item> Items = new ObservableCollection<Item>();
     public TabInfo Info;
+
+    private string SortingColumn = "FullName";
+    private bool SortingAscending = true;
+
+    private object Query;
+    public ICollectionView CurrentView
+    {
+      get {
+        if (Query == null)
+          return null;
+
+        CollectionViewSource itemsCollection = new CollectionViewSource();
+
+        itemsCollection.Source = Query;
+
+        return itemsCollection.View;
+      }
+    }
+
+    public bool IsEmpty = false;
     public Tab(TabInfo info)
     {
       Info = info;
@@ -21,6 +43,8 @@ namespace PerandusBacker.Stash
 
     public async Task LoadItems(Dictionary<string, ItemPriceInfo> itemsPrice = null)
     {
+      Items.Clear();
+
       string output = await Network.Request($"character-window/get-stash-items?accountName={Data.Account.Name}&league={Data.League.Id}&tabs=0&tabIndex={Info.Index}");
       StashItem[] items = JsonSerializer.Deserialize<StashInfo>(output).Items;
 
@@ -37,98 +61,105 @@ namespace PerandusBacker.Stash
 
         Items.Add(item);
       }
+
+      LoadItems();
     }
 
-    private IOrderedEnumerable<Item> SortColumnQuery(string columnName, bool ascending)
+    private IOrderedEnumerable<Item> SortColumnQuery()
     {
-      switch (columnName)
+      IEnumerable<Item> items = (Query == null ? Items : Query) as IEnumerable<Item>;
+      switch (SortingColumn)
       {
         case "Stack":
-          if (ascending)
+          if (SortingAscending)
           {
-            return from item in Items
+            return from item in items
                    orderby item.StackSize ascending
                    select item;
           }
           else
           {
-            return from item in Items
+            return from item in items
                    orderby item.StackSize descending
                    select item;
           }
         case "Corrupted":
-          if (ascending)
+          if (SortingAscending)
           {
-            return from item in Items
+            return from item in items
                    orderby item.Corrupted ascending
                    select item;
           }
           else
           {
-            return from item in Items
+            return from item in items
                    orderby item.Corrupted descending
                    select item;
           }
         case "Quality":
-          if (ascending)
+          if (SortingAscending)
           {
-            return from item in Items
+            return from item in items
                    orderby item.Quality ascending
                    select item;
           }
           else
           {
-            return from item in Items
+            return from item in items
                    orderby item.Quality descending
                    select item;
           }
         case "Physical Damage":
-          if (ascending)
+          if (SortingAscending)
           {
-            return from item in Items
+            return from item in items
                    orderby item.PhysicalDamage ascending
                    select item;
           }
           else
           {
-            return from item in Items
+            return from item in items
                    orderby item.PhysicalDamage descending
                    select item;
           }
         default:
-          if (ascending)
+          if (SortingAscending)
           {
-            return from item in Items
+            return from item in items
                    orderby item.FullName ascending
                    select item;
           }
           else
           {
-            return from item in Items
+            return from item in items
                    orderby item.FullName descending
                    select item;
           }
       }
     }
 
-    public CollectionViewSource GetItemsSorted(string columnName, bool ascending)
+    public void SearchItems(string search)
     {
-      IOrderedEnumerable<Item> query = SortColumnQuery(columnName, ascending);
+      Query = Items.Where(item => Regex.IsMatch(item.FullName, search, RegexOptions.IgnoreCase));
 
-      CollectionViewSource itemsCollection = new CollectionViewSource();
-      itemsCollection.Source = query;
+      Query = SortColumnQuery();
 
-      return itemsCollection;
+      IsEmpty = (Query as IEnumerable<Item>).Count() == 0;
     }
 
-    public IOrderedEnumerable<Item> GetItemsQuery()
+    public void LoadItemsSorted(string columnName, bool ascending)
     {
-      return SortColumnQuery("FullName", true);
+      SortingColumn = columnName;
+      SortingAscending = ascending;
+
+      Query = SortColumnQuery();
+
+      IsEmpty = (Query as IOrderedEnumerable<Item>).Count() == 0;
     }
 
-    public CollectionViewSource GetItems()
+    public void LoadItems()
     {
-      return GetItemsSorted("FullName", true);
+      LoadItemsSorted("FullName", true);
     }
   }
 }

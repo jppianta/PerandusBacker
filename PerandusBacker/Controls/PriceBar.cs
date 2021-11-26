@@ -49,7 +49,8 @@ namespace PerandusBacker.Controls
     private void OnItemSelected(object sender, ItemSelectedEventArgs e)
     {
       SelectedItem = e.SelectedItem;
-      if (SelectedItem.PriceCurrency != null)
+
+      if (SelectedItem != null && SelectedItem.PriceCurrency != null)
       {
         CurrencyComboBox.SelectedItem = SelectedItem.PriceCurrency;
         CurrencyCountBox.Value = SelectedItem.PriceCount;
@@ -72,7 +73,8 @@ namespace PerandusBacker.Controls
 
     private async void UpdatePricesOnForum(bool force = false)
     {
-      if (force) {
+      if (force)
+      {
         await Network.PostItems();
         return;
       }

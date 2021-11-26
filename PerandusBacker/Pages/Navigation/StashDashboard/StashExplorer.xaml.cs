@@ -1,7 +1,10 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using System.Collections.ObjectModel;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using PerandusBacker.Stash;
 using PerandusBacker.Json;
@@ -14,15 +17,18 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
   /// </summary>
   public sealed partial class StashExplorer : Page
   {
-    ObservableCollection<TabViewItem> Tabs = new ObservableCollection<TabViewItem>();
+    public Dictionary<string, (TabViewItem, int)> tabMap = new Dictionary<string, (TabViewItem, int)>();
     public StashExplorer()
     {
       this.InitializeComponent();
+
+      Events.SearchHandler += SearchOnTabs;
+      Events.ReloadItemsHandler += ReloadItems;
     }
 
-    private async void LoadData(Dictionary<string, ItemPriceInfo> items)
+    private async void LoadData(Dictionary<string, ItemPriceInfo> items, bool refresh = false)
     {
-      if (!StashManager.HasLoaded)
+      if (!StashManager.HasLoaded || refresh)
       {
         LoadingControl.IsLoading = true;
 
@@ -44,28 +50,63 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
 
     private void InitializeTabs()
     {
-      foreach (Tab tab in StashManager.Tabs)
+      for (int i = 0; i < StashManager.Tabs.Length; i++)
       {
-        Tabs.Add(CreateTab(tab));
+        Tab tab = StashManager.Tabs[i];
+
+        if (!tabMap.ContainsKey(tab.Info.Id))
+        {
+          TabViewItem item = CreateTab(tab, i);
+
+          if (!tab.IsEmpty)
+          {
+            TabControl.TabItems.Add(item);
+          }
+        }
       }
 
       TabControl.SelectedIndex = 0;
     }
 
-    private TabViewItem CreateTab(Tab tab)
+    private void SearchOnTabs(object _, SearchEventArgs e)
     {
+      StashManager.Tabs.AsParallel().ForAll(tab => tab.SearchItems(e.Query));
+      foreach (Tab tab in StashManager.Tabs)
+      {
+        (TabViewItem tabViewItem, int index) = tabMap[tab.Info.Id];
 
+        if (tab.IsEmpty)
+        {
+          TabControl.TabItems.Remove(tabViewItem);
+        }
+        else if (!TabControl.TabItems.Contains(tabViewItem))
+        {
+          TabControl.TabItems.Insert(index, tabViewItem);
+        }
 
-      TabViewItem newTab = new TabViewItem
+        (tabViewItem.Content as TabView).RefreshItems();
+      }
+    }
+
+    private TabViewItem CreateTab(Tab tab, int index)
+    {
+      TabViewItem tabViewItem = new TabViewItem
       {
         Header = tab.Info.Name,
         IsClosable = false,
-        HeaderTemplate = HeaderTemplate
+        HeaderTemplate = HeaderTemplate,
       };
 
-      newTab.Content = new TabView(tab);
+      tabViewItem.Content = new TabView(tab);
 
-      return newTab;
+      tabMap.Add(tab.Info.Id, (tabViewItem, index));
+
+      return tabViewItem;
+    }
+
+    private async void ReloadItems(object _, EventArgs e)
+    {
+      LoadData((await Storage.LoadPrices()).Items, true);
     }
 
     private async void OnLoading(FrameworkElement sender, object args)

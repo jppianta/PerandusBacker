@@ -18,5 +18,10 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
       StashTab = tab;
       this.InitializeComponent();
     }
+
+    public void RefreshItems()
+    {
+      Table.LoadData();
+    }
   }
 }

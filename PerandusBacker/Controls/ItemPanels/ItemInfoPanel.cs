@@ -48,15 +48,22 @@ namespace PerandusBacker.Controls
     {
       if (InfoStackPanel != null)
       {
-        InfoStackPanel.Children.Clear();
-
-        (List<(ItemProperty[], Orientation)> propertiesList, List<string[]> modsList) = GetPropertiesAndModifiers();
-
-        InfoStackPanel.Children.Add(CreatePropertiesPanel(propertiesList, HasMods(modsList)));
-        InfoStackPanel.Children.Add(CreateModsPanel(modsList));
-        if (IsCorrupted)
+        if (Item == null)
         {
-          InfoStackPanel.Children.Add(CreateCorruptedItem());
+          InfoStackPanel.Children.Clear();
+        }
+        else
+        {
+          InfoStackPanel.Children.Clear();
+
+          (List<(ItemProperty[], Orientation)> propertiesList, List<string[]> modsList) = GetPropertiesAndModifiers();
+
+          InfoStackPanel.Children.Add(CreatePropertiesPanel(propertiesList, HasMods(modsList)));
+          InfoStackPanel.Children.Add(CreateModsPanel(modsList));
+          if (IsCorrupted)
+          {
+            InfoStackPanel.Children.Add(CreateCorruptedItem());
+          }
         }
       }
     }

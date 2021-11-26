@@ -24,6 +24,8 @@ namespace PerandusBacker.Controls
       DependencyProperty.Register(nameof(Item), typeof(Item),
         typeof(LinkPanel), new PropertyMetadata(null, new PropertyChangedCallback(OnItemChanged)));
 
+    private Canvas LinkPanelCanvas;
+
     public LinkPanel()
     {
       this.DefaultStyleKey = typeof(LinkPanel);
@@ -34,30 +36,35 @@ namespace PerandusBacker.Controls
       LinkPanel linkPanel = (LinkPanel)d;
 
       linkPanel.DataContext = e.NewValue;
-      Canvas LinkPanel = linkPanel.GetTemplateChild("LinkPanel") as Canvas;
-
-      if (LinkPanel != null)
-      {
-        if (linkPanel.Item.Sockets != null)
-        {
-          int spacing = 10;
-          int socketSize = 30;
-          int rows = (linkPanel.Item.Sockets.Length % linkPanel.Item.Width == 0 ? linkPanel.Item.Sockets.Length : linkPanel.Item.Sockets.Length + 1) / linkPanel.Item.Width;
-          int columns = linkPanel.Item.Width; 
-
-          LinkPanel.Height = (rows * socketSize) + ((rows - 1) * spacing);
-          LinkPanel.Width = (columns * socketSize) + ((columns - 1) * spacing);
-        }
-
-        linkPanel.DrawSocketLinks(LinkPanel);
-      }
+      
+      linkPanel.CreatePanel();
     }
 
     protected override void OnApplyTemplate()
     {
       DataContext = Item;
-      Canvas LinkPanel = GetTemplateChild("LinkPanel") as Canvas;
+      LinkPanelCanvas = GetTemplateChild("LinkPanel") as Canvas;
 
+      CreatePanel();
+    }
+
+    private void CreatePanel()
+    {
+      if (LinkPanelCanvas != null)
+      {
+        if (Item == null)
+        {
+          ClearPanel();
+        } else
+        {
+          SetDefinitions();
+          DrawSocketLinks();
+        }
+      }
+    }
+
+    private void SetDefinitions()
+    {
       if (Item.Sockets != null)
       {
         int spacing = 10;
@@ -66,16 +73,19 @@ namespace PerandusBacker.Controls
         int rows = (Item.Sockets.Length % 2 == 0 ? Item.Sockets.Length : Item.Sockets.Length + 1) / Item.Width;
         int columns = Item.Width;
 
-        LinkPanel.Height = (rows * socketSize) + ((rows - 1) * spacing);
-        LinkPanel.Width = (columns * socketSize) + ((columns - 1) * spacing);
+        LinkPanelCanvas.Height = (rows * socketSize) + ((rows - 1) * spacing);
+        LinkPanelCanvas.Width = (columns * socketSize) + ((columns - 1) * spacing);
       }
-
-      DrawSocketLinks(LinkPanel);
     }
 
-    private void DrawSocketLinks(Canvas LinkPanel)
+    private void ClearPanel()
     {
-      LinkPanel.Children.Clear();
+      LinkPanelCanvas.Children.Clear();
+    }
+
+    private void DrawSocketLinks()
+    {
+      ClearPanel();
 
       if (Item.Sockets?.Length > 0)
       {
@@ -127,7 +137,7 @@ namespace PerandusBacker.Controls
               x2 -= socketHalf;
             }
 
-            LinkPanel.Children.Add(CreateLine(x1, y1, x2, y2));
+            LinkPanelCanvas.Children.Add(CreateLine(x1, y1, x2, y2));
 
             lastItem = currentItem;
           }

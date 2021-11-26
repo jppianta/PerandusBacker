@@ -31,36 +31,22 @@
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition
+          Height="Auto" />
+        <RowDefinition
           Height="*" />
         <RowDefinition
           Height="Auto" />
       </Grid.RowDefinitions>
-      <Grid
-        Grid.Row="0">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition
-            Width="*" />
-          <ColumnDefinition
-            Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <TabView
-          x:Name="TabControl"
-          Grid.Column="0"
-          TabItemsSource="{x:Bind Tabs, Mode=OneWay}"
-          IsAddTabButtonVisible="False"
-          TabWidthMode="SizeToContent"
-          CanReorderTabs="True" />
-        <toolkit:Expander
-          Grid.Column="1"
-          Background="Transparent"
-          Header="Item"
-          IsExpanded="True"
-          ExpandDirection="Left">
-          <controls:ItemVisualizer />
-        </toolkit:Expander>
-      </Grid>
+      <controls:Menu />
+      <TabView
+        x:Name="TabControl"
+        VerticalAlignment="Stretch"
+        Grid.Row="1"
+        IsAddTabButtonVisible="False"
+        TabWidthMode="SizeToContent"
+        CanReorderTabs="True" />
       <controls:PriceBar
-        Grid.Row="1" />
+        Grid.Row="2" />
     </Grid>
 
     <toolkit:Loading

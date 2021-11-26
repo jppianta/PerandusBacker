@@ -27,25 +27,5 @@ namespace PerandusBacker.Stash
       await Task.WhenAll(loadTabs);
       HasLoaded = true;
     }
-
-    public static CollectionViewSource GetGroups()
-    {
-      List<Item> items = new List<Item>();
-      foreach (Tab tab in Tabs)
-      {
-        items.AddRange(tab.Items);
-      }
-
-      var query = from item in items
-                  group item by item.TabInfo.Index into groupedItem
-                  orderby groupedItem.Key
-                  select groupedItem;
-
-      CollectionViewSource groupedItems = new CollectionViewSource();
-      groupedItems.IsSourceGrouped = true;
-      groupedItems.Source = query;
-
-      return groupedItems;
-    }
   }
 }

@@ -21,6 +21,8 @@ namespace PerandusBacker.Controls
       DependencyProperty.Register(nameof(Item), typeof(Item),
         typeof(SocketPanel), new PropertyMetadata(null, new PropertyChangedCallback(OnItemChanged)));
 
+    private Grid SocketGrid;
+
     public SocketPanel()
     {
       this.DefaultStyleKey = typeof(SocketPanel);
@@ -30,16 +32,24 @@ namespace PerandusBacker.Controls
     {
       SocketPanel socketPanel = (SocketPanel)d;
 
-      Grid SocketGrid = socketPanel.GetTemplateChild("SocketGrid") as Grid;
+      socketPanel.CreatePanel();
+    }
 
+    private void CreatePanel()
+    {
       if (SocketGrid != null)
       {
-        socketPanel.SetDefinitions(SocketGrid);
-        socketPanel.CreateSockets(SocketGrid);
+        if (Item == null)
+        {
+          ClearPanel();
+        } else{
+          SetDefinitions();
+          CreateSockets();
+        }
       }
     }
 
-    private void SetDefinitions(Grid SocketGrid)
+    private void SetDefinitions()
     {
       SocketGrid.RowDefinitions.Clear();
       SocketGrid.ColumnDefinitions.Clear();
@@ -59,9 +69,14 @@ namespace PerandusBacker.Controls
       }
     }
 
-    private void CreateSockets(Grid SocketGrid)
+    private void ClearPanel()
     {
       SocketGrid.Children.Clear();
+    }
+
+    private void CreateSockets()
+    {
+      ClearPanel();
 
       for (int i = 0; i < Item.Sockets?.Length; i++)
       {
@@ -92,10 +107,9 @@ namespace PerandusBacker.Controls
 
     protected override void OnApplyTemplate()
     {
-      Grid SocketGrid = GetTemplateChild("SocketGrid") as Grid;
+      SocketGrid = GetTemplateChild("SocketGrid") as Grid;
 
-      SetDefinitions(SocketGrid);
-      CreateSockets(SocketGrid);
+      CreatePanel();
     }
   }
 }

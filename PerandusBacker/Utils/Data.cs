@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 
 using PerandusBacker.Json;
 
@@ -12,7 +11,8 @@ namespace PerandusBacker.Utils
     public string Image { get; set; }
   }
 
-  internal class PriceInfo {
+  internal class PriceInfo
+  {
     public double ChaosPrice { get; set; }
 
     public DateTime Time { get; set; }
@@ -71,15 +71,15 @@ namespace PerandusBacker.Utils
       };
     }
 
-    public static Action Debounce(TimerCallback callback, TimeSpan period)
+    public static Action Debounce(System.Threading.TimerCallback callback, TimeSpan period)
     {
-      Timer timer = null;
+      System.Threading.Timer timer = null;
 
       return () =>
       {
         if (timer == null)
         {
-          timer = new Timer(callback, null, (int)period.TotalMilliseconds, 0);
+          timer = new System.Threading.Timer(callback, null, (int)period.TotalMilliseconds, 0);
         }
         else
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
 using CommunityToolkit.WinUI.UI.Controls;
 
@@ -32,9 +33,9 @@ namespace PerandusBacker.Controls
 
     private static void OnItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-      ItemsTable table = (ItemsTable)d;
+      //ItemsTable table = (ItemsTable)d;
 
-      table.LoadData();
+      //table.LoadData();
     }
 
     protected override void OnApplyTemplate()
@@ -47,13 +48,13 @@ namespace PerandusBacker.Controls
       LoadData();
     }
 
-    private void LoadData()
+    public void LoadData()
     {
       if (StashGrid != null)
       {
-        StashGrid.ItemsSource = StashTab.GetItems().View;
+        StashGrid.ItemsSource = StashTab.CurrentView;
 
-        StashGrid.SelectedItem = currentSelectedItem;
+        //StashGrid.SelectedItem = currentSelectedItem;
       }
     }
 
@@ -61,20 +62,21 @@ namespace PerandusBacker.Controls
     {
       if (e.Column.SortDirection == null)
       {
-        StashGrid.ItemsSource = StashTab.GetItemsSorted(e.Column.Tag.ToString(), true).View;
+        StashTab.LoadItemsSorted(e.Column.Tag.ToString(), true);
         e.Column.SortDirection = DataGridSortDirection.Ascending;
       }
       else if (e.Column.SortDirection == DataGridSortDirection.Ascending)
       {
-        StashGrid.ItemsSource = StashTab.GetItemsSorted(e.Column.Tag.ToString(), false).View;
+        StashTab.LoadItemsSorted(e.Column.Tag.ToString(), false);
         e.Column.SortDirection = DataGridSortDirection.Descending;
       }
       else
       {
-        StashGrid.ItemsSource = StashTab.GetItems().View;
+        StashTab.LoadItems();
         e.Column.SortDirection = null;
       }
 
+      LoadData();
       StashGrid.SelectedItem = currentSelectedItem;
     }
 

@@ -20,6 +20,11 @@ namespace PerandusBacker.Utils
     public Item SelectedItem { get; set; }
   }
 
+  internal class SearchEventArgs : EventArgs
+  {
+    public string Query { get; set; }
+  }
+
   static class Events
   {
     public static event EventHandler<SwitchPageEventArgs> SwitchPageHandler;
@@ -38,6 +43,18 @@ namespace PerandusBacker.Utils
     public static void ItemSelected(Item item)
     {
       ItemSelectedHandler?.Invoke(null, new ItemSelectedEventArgs() { SelectedItem = item });
+    }
+
+    public static event EventHandler<SearchEventArgs> SearchHandler;
+    public static void Search(string query)
+    {
+      SearchHandler?.Invoke(null, new SearchEventArgs() { Query = query });
+    }
+
+    public static event EventHandler ReloadItemsHandler;
+    public static void ReloadItems()
+    {
+      ReloadItemsHandler?.Invoke(null, EventArgs.Empty);
     }
   }
 }

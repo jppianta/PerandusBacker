@@ -194,7 +194,7 @@
           TargetType="local:PriceBar">
           <Grid
             Grid.Row="1"
-            Padding="8"
+            Padding="16,8"
             ColumnSpacing="8">
             <Grid.ColumnDefinitions>
               <ColumnDefinition
@@ -223,6 +223,8 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <!---->
 
   <!--
     ItemInfoPanel
@@ -304,8 +306,7 @@
               <toolkit:DataGridTextColumn
                 Header="Stack"
                 Tag="Stack"
-                Binding="{Binding StackText}"
-              />
+                Binding="{Binding StackText}" />
               <toolkit:DataGridTextColumn
                 Header="Corrupted"
                 Tag="Corrupted"
@@ -329,4 +330,46 @@
 
   <!---->
 
+  <!--
+    Menu
+  -->
+
+  <Style
+    TargetType="local:Menu">
+    <Setter
+      Property="Template">
+      <Setter.Value>
+        <ControlTemplate
+          TargetType="local:Menu">
+          <CommandBar
+            Background="Transparent"
+            IsOpen="False"
+            DefaultLabelPosition="Right"
+            IsSticky="True">
+            <AppBarButton
+              Label="Refresh"
+              x:Name="ReloadButton">
+              <AppBarButton.Icon>
+                <FontIcon
+                  FontFamily="Segoe Fluent Icons"
+                  Glyph="&#xe72c;" />
+              </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarSeparator />
+            <AppBarElementContainer>
+              <TextBox
+                x:Name="SearchBox"
+                Margin="4,8"
+                Width="150"
+                PlaceholderText="Search" />
+            </AppBarElementContainer>
+          </CommandBar>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!---->
+
+  <!---->
 </ResourceDictionary>
