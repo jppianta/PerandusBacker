@@ -23,6 +23,7 @@
     <NavigationView.MenuItems>
       <NavigationViewItem
         Content="Stash"
+        x:Name="StashViewItem"
         Tag="StashDashboard.StashExplorer">
         <NavigationViewItem.Icon>
           <FontIcon

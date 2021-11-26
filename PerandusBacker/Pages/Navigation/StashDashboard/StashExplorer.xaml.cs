@@ -62,10 +62,14 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
           {
             TabControl.TabItems.Add(item);
           }
+        } else
+        {
+          // This is probably just a refresh, so it is good to refresh the table's content as well
+          (tabMap[tab.Info.Id].Item1.Content as TabView).RefreshItems();
         }
       }
 
-      TabControl.SelectedIndex = 0;
+      CheckNoTabMessage();
     }
 
     private void SearchOnTabs(object _, SearchEventArgs e)
@@ -81,11 +85,13 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
         }
         else if (!TabControl.TabItems.Contains(tabViewItem))
         {
-          TabControl.TabItems.Insert(index, tabViewItem);
+          TabControl.TabItems.Insert(index > TabControl.TabItems.Count ? TabControl.TabItems.Count : index, tabViewItem);
         }
 
         (tabViewItem.Content as TabView).RefreshItems();
       }
+
+      CheckNoTabMessage();
     }
 
     private TabViewItem CreateTab(Tab tab, int index)
@@ -107,6 +113,18 @@ namespace PerandusBacker.Pages.Navigation.StashDashboard
     private async void ReloadItems(object _, EventArgs e)
     {
       LoadData((await Storage.LoadPrices()).Items, true);
+    }
+
+    private void CheckNoTabMessage() {
+      if (TabControl.TabItems.Count > 0)
+      {
+        NoTabsMessage.Visibility = Visibility.Collapsed;
+        TabControl.SelectedIndex = 0;
+      }
+      else
+      {
+        NoTabsMessage.Visibility = Visibility.Visible;
+      }
     }
 
     private async void OnLoading(FrameworkElement sender, object args)

@@ -341,29 +341,37 @@
       <Setter.Value>
         <ControlTemplate
           TargetType="local:Menu">
-          <CommandBar
-            Background="Transparent"
-            IsOpen="False"
-            DefaultLabelPosition="Right"
-            IsSticky="True">
-            <AppBarButton
-              Label="Refresh"
-              x:Name="ReloadButton">
-              <AppBarButton.Icon>
-                <FontIcon
-                  FontFamily="Segoe Fluent Icons"
-                  Glyph="&#xe72c;" />
-              </AppBarButton.Icon>
-            </AppBarButton>
-            <AppBarSeparator />
-            <AppBarElementContainer>
-              <TextBox
-                x:Name="SearchBox"
-                Margin="4,8"
-                Width="150"
-                PlaceholderText="Search" />
-            </AppBarElementContainer>
-          </CommandBar>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition
+                Width="*" />
+              <ColumnDefinition
+                Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <CommandBar
+              Background="Transparent"
+              HorizontalAlignment="Left"
+              IsOpen="False"
+              DefaultLabelPosition="Right"
+              IsSticky="True">
+              <AppBarButton
+                Label="Refresh"
+                x:Name="ReloadButton">
+                <AppBarButton.Icon>
+                  <FontIcon
+                    FontFamily="Segoe Fluent Icons"
+                    Glyph="&#xe72c;" />
+                </AppBarButton.Icon>
+              </AppBarButton>
+            </CommandBar>
+            <TextBox
+              x:Name="SearchBox"
+              Grid.Column="1"
+              Margin="0,0,8,0"
+              VerticalAlignment="Center"
+              Width="150"
+              PlaceholderText="Search" />
+          </Grid>
         </ControlTemplate>
       </Setter.Value>
     </Setter>

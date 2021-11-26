@@ -18,6 +18,8 @@ namespace PerandusBacker.Pages
     {
       this.InitializeComponent();
       Events.ResizeWindow(1400, 800);
+
+      NavBar.SelectedItem = StashViewItem;
     }
 
     private void OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

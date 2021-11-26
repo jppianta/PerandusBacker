@@ -24,6 +24,8 @@ namespace PerandusBacker.Utils
   }
   static class Storage
   {
+    public static bool SavePoeSession = false;
+
     private static readonly string DocumentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/PerandusBacker/";
     private static byte[] CreateEntropy()
     {
@@ -56,6 +58,11 @@ namespace PerandusBacker.Utils
 
     public static void SaveUserInfo(string PoeSessionId, LeagueInfo League)
     {
+      if (!SavePoeSession)
+      {
+        PoeSessionId = "";
+      }
+
       byte[] PoeSessionIdBytes = Encoding.UTF8.GetBytes(PoeSessionId);
       byte[] Entropy = CreateEntropy();
 
@@ -158,7 +165,8 @@ namespace PerandusBacker.Utils
 
         return JsonSerializer.Deserialize<Prices>(itemsPrice);
       }
-      catch {
+      catch
+      {
         return new Prices();
       }
     }

@@ -56,6 +56,7 @@ namespace PerandusBacker.Pages
       {
         if (SaveCredentialsCheckBox.IsChecked is bool Checked && Checked)
         {
+          Storage.SavePoeSession = true;
           Storage.SaveUserInfo(PoeSessionIdBox.Password, Data.League);
         }
 

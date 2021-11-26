@@ -45,6 +45,13 @@
         IsAddTabButtonVisible="False"
         TabWidthMode="SizeToContent"
         CanReorderTabs="True" />
+      <TextBlock
+        x:Name="NoTabsMessage"
+        Grid.Row="1"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center"
+        Visibility="Collapsed"
+        Text="Looks like you don't have what you are looking for, exile..." />
       <controls:PriceBar
         Grid.Row="2" />
     </Grid>
