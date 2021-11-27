@@ -12,3 +12,11 @@ Just because you play Path of Exile, doesn't mean that your tools should feel li
 
 
 <img src="./PerandusBacker/Assets/Logos/PerandusBacker_400.png" />
+
+<details>
+  <summary>Gallery</summary>
+  
+  <img src="./Gallery/Item1.png" />
+  <img src="./Gallery/Item2.png" />
+  <img src="./Gallery/Settings.png" />
+</details>
